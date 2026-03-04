@@ -12,11 +12,8 @@ struct WorkspaceView: View {
         } detail: {
             Group {
                 if let session = viewModel.activeSession {
-                    ScrollView {
-                        Text(session.content)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(24)
-                    }
+                    let parsed = FrontmatterParser().parse(markdown: session.content)
+                    RenderedMarkdownView(document: parsed)
                 } else {
                     ContentUnavailableView("Open a Markdown File", systemImage: "doc.text")
                 }
@@ -30,7 +27,14 @@ struct WorkspaceView: View {
                 }
             }
         }
-        .alert("Could Not Open File", isPresented: .constant(viewModel.errorMessage != nil), actions: {
+        .alert("Could Not Open File", isPresented: Binding(
+            get: { viewModel.errorMessage != nil },
+            set: { isPresented in
+                if !isPresented {
+                    viewModel.errorMessage = nil
+                }
+            }
+        ), actions: {
             Button("OK", role: .cancel) {
                 viewModel.errorMessage = nil
             }

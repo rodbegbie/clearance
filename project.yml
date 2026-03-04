@@ -19,7 +19,7 @@ targets:
         excludes:
           - Resources/Assets.xcassets
     resources:
-      - path: Clearance/Resources/Assets.xcassets
+      - path: Clearance/Resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jesse.Clearance
