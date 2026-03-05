@@ -15,9 +15,12 @@ struct WorkspaceView: View {
 
     var body: some View {
         NavigationSplitView {
-            RecentFilesSidebar(entries: viewModel.recentFilesStore.entries) { entry in
-                viewModel.open(recentEntry: entry)
-            } onPopOut: { entry in
+            RecentFilesSidebar(
+                entries: viewModel.recentFilesStore.entries,
+                selectedPath: $viewModel.selectedRecentPath
+            ) { entry in
+                selectRecentEntry(entry)
+            } onOpenInNewWindow: { entry in
                 popOut(entry: entry)
             }
         } detail: {
@@ -67,7 +70,7 @@ struct WorkspaceView: View {
             openFile: { viewModel.promptAndOpenFile() },
             showViewMode: { if viewModel.activeSession != nil { viewModel.mode = .view } },
             showEditMode: { if viewModel.activeSession != nil { viewModel.mode = .edit } },
-            popOutActive: { popOutActiveSession() },
+            openInNewWindow: { popOutActiveSession() },
             hasActiveSession: viewModel.activeSession != nil
         ))
         .toolbar {
@@ -85,12 +88,6 @@ struct WorkspaceView: View {
                 Button("Open") {
                     viewModel.promptAndOpenFile()
                 }
-            }
-            ToolbarItem(placement: .automatic) {
-                Button("Pop Out") {
-                    popOutActiveSession()
-                }
-                .disabled(viewModel.activeSession == nil)
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .clearanceOpenURLs)) { notification in
@@ -129,6 +126,16 @@ struct WorkspaceView: View {
         if let session = viewModel.open(recentEntry: entry) {
             popoutWindowController.openWindow(for: session, mode: viewModel.mode)
         }
+    }
+
+    private func selectRecentEntry(_ entry: RecentFileEntry) {
+        let activePath = viewModel.activeSession?.url.standardizedFileURL.path
+        if activePath == entry.path {
+            viewModel.selectedRecentPath = entry.path
+            return
+        }
+
+        viewModel.open(recentEntry: entry)
     }
 
     private func popOutDraggedPath(_ path: String) -> Bool {

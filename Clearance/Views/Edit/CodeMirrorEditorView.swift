@@ -102,12 +102,12 @@ struct CodeMirrorEditorView: NSViewRepresentable {
         }
 
         func applyTheme(to textView: NSTextView) {
-            textView.backgroundColor = SolarizedPalette.editorBackground
-            textView.textColor = SolarizedPalette.text
-            textView.insertionPointColor = SolarizedPalette.insertionPoint
+            textView.backgroundColor = ClearancePalette.editorBackground
+            textView.textColor = ClearancePalette.text
+            textView.insertionPointColor = ClearancePalette.insertionPoint
             textView.selectedTextAttributes = [
-                .backgroundColor: SolarizedPalette.selectionBackground,
-                .foregroundColor: SolarizedPalette.selectionText
+                .backgroundColor: ClearancePalette.selectionBackground,
+                .foregroundColor: ClearancePalette.selectionText
             ]
         }
     }
@@ -200,32 +200,32 @@ final class MarkdownSyntaxHighlighter {
     private var baseAttributes: [NSAttributedString.Key: Any] {
         [
             .font: NSFont.monospacedSystemFont(ofSize: 14, weight: .regular),
-            .foregroundColor: SolarizedPalette.text
+            .foregroundColor: ClearancePalette.text
         ]
     }
 
     private var frontmatterAttributes: [NSAttributedString.Key: Any] {
         [
             .font: NSFont.monospacedSystemFont(ofSize: 13.5, weight: .regular),
-            .foregroundColor: SolarizedPalette.frontmatter
+            .foregroundColor: ClearancePalette.frontmatter
         ]
     }
 
     private var blockquoteAttributes: [NSAttributedString.Key: Any] {
         [
-            .foregroundColor: SolarizedPalette.secondaryText
+            .foregroundColor: ClearancePalette.secondaryText
         ]
     }
 
     private var listMarkerAttributes: [NSAttributedString.Key: Any] {
         [
-            .foregroundColor: SolarizedPalette.listMarker
+            .foregroundColor: ClearancePalette.listMarker
         ]
     }
 
     private var linkAttributes: [NSAttributedString.Key: Any] {
         [
-            .foregroundColor: SolarizedPalette.link,
+            .foregroundColor: ClearancePalette.link,
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
     }
@@ -245,16 +245,16 @@ final class MarkdownSyntaxHighlighter {
     private var inlineCodeAttributes: [NSAttributedString.Key: Any] {
         [
             .font: NSFont.monospacedSystemFont(ofSize: 13, weight: .regular),
-            .foregroundColor: SolarizedPalette.inlineCodeText,
-            .backgroundColor: SolarizedPalette.inlineCodeBackground
+            .foregroundColor: ClearancePalette.inlineCodeText,
+            .backgroundColor: ClearancePalette.inlineCodeBackground
         ]
     }
 
     private var fencedCodeAttributes: [NSAttributedString.Key: Any] {
         [
             .font: NSFont.monospacedSystemFont(ofSize: 13, weight: .regular),
-            .foregroundColor: SolarizedPalette.codeBlockText,
-            .backgroundColor: SolarizedPalette.codeBlockBackground
+            .foregroundColor: ClearancePalette.codeBlockText,
+            .backgroundColor: ClearancePalette.codeBlockBackground
         ]
     }
 
@@ -275,26 +275,26 @@ final class MarkdownSyntaxHighlighter {
 
         return [
             .font: NSFont.monospacedSystemFont(ofSize: size, weight: .semibold),
-            .foregroundColor: SolarizedPalette.heading
+            .foregroundColor: ClearancePalette.heading
         ]
     }
 }
 
-private enum SolarizedPalette {
-    static let editorBackground = dynamic(light: hex(0xFDF6E3), dark: hex(0x002B36))
-    static let text = dynamic(light: hex(0x657B83), dark: hex(0x839496))
-    static let secondaryText = dynamic(light: hex(0x586E75), dark: hex(0x586E75))
-    static let heading = dynamic(light: hex(0x268BD2), dark: hex(0x5FA8D7))
-    static let frontmatter = dynamic(light: hex(0x2AA198), dark: hex(0x7BD1BD))
-    static let listMarker = dynamic(light: hex(0xCB4B16), dark: hex(0xCB4B16))
-    static let link = dynamic(light: hex(0x268BD2), dark: hex(0x5FA8D7))
-    static let inlineCodeText = dynamic(light: hex(0x859900), dark: hex(0x7BD1BD))
-    static let inlineCodeBackground = dynamic(light: hex(0xEEE8D5, alpha: 0.95), dark: hex(0x073642, alpha: 0.88))
-    static let codeBlockText = dynamic(light: hex(0x586E75), dark: hex(0xC8D9DD))
-    static let codeBlockBackground = dynamic(light: hex(0xEEE8D5), dark: hex(0x073642))
-    static let insertionPoint = dynamic(light: hex(0x268BD2), dark: hex(0x2AA198))
-    static let selectionBackground = dynamic(light: hex(0x268BD2, alpha: 0.28), dark: hex(0x268BD2, alpha: 0.42))
-    static let selectionText = dynamic(light: hex(0x002B36), dark: hex(0xFDF6E3))
+private enum ClearancePalette {
+    static let editorBackground = dynamic(light: hex(0xF4F6FA), dark: hex(0x0F141D))
+    static let text = dynamic(light: hex(0x223041), dark: hex(0xD4DEEF))
+    static let secondaryText = dynamic(light: hex(0x5A6678), dark: hex(0x9CA9BF))
+    static let heading = dynamic(light: hex(0x445FD0), dark: hex(0x8DA2FF))
+    static let frontmatter = dynamic(light: hex(0x2D8D86), dark: hex(0x76CCC5))
+    static let listMarker = dynamic(light: hex(0xD97706), dark: hex(0xF59E0B))
+    static let link = dynamic(light: hex(0x396AD5), dark: hex(0x8DA2FF))
+    static let inlineCodeText = dynamic(light: hex(0x35579D), dark: hex(0x9DC2FF))
+    static let inlineCodeBackground = dynamic(light: hex(0x5871AA, alpha: 0.18), dark: hex(0x6D8AC3, alpha: 0.24))
+    static let codeBlockText = dynamic(light: hex(0xDCE6F8), dark: hex(0xDCE6F8))
+    static let codeBlockBackground = dynamic(light: hex(0x1F2937), dark: hex(0x0B111A))
+    static let insertionPoint = dynamic(light: hex(0x396AD5), dark: hex(0x8DA2FF))
+    static let selectionBackground = dynamic(light: hex(0x396AD5, alpha: 0.28), dark: hex(0x8DA2FF, alpha: 0.30))
+    static let selectionText = dynamic(light: hex(0x0F141D), dark: hex(0xF4F6FA))
 
     private static func dynamic(light: NSColor, dark: NSColor) -> NSColor {
         NSColor(name: nil) { appearance in

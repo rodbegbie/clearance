@@ -27,7 +27,7 @@ struct WorkspaceCommandActions {
     let openFile: () -> Void
     let showViewMode: () -> Void
     let showEditMode: () -> Void
-    let popOutActive: () -> Void
+    let openInNewWindow: () -> Void
     let hasActiveSession: Bool
 }
 
@@ -69,8 +69,8 @@ private struct ClearanceCommands: Commands {
 
             Divider()
 
-            Button("Pop Out In New Window") {
-                actions?.popOutActive()
+            Button("Open In New Window") {
+                actions?.openInNewWindow()
             }
             .keyboardShortcut("p", modifiers: [.command, .shift])
             .disabled(actions?.hasActiveSession != true)

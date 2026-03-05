@@ -10,6 +10,7 @@ final class WorkspaceViewModel: NSObject, ObservableObject {
     }
     @Published var errorMessage: String?
     @Published var mode: WorkspaceMode
+    @Published var selectedRecentPath: String?
     @Published private(set) var windowTitle: String
     @Published private(set) var externalChangeDocumentName: String?
 
@@ -49,15 +50,18 @@ final class WorkspaceViewModel: NSObject, ObservableObject {
 
     @discardableResult
     func open(url: URL) -> DocumentSession? {
+        let standardizedURL = url.standardizedFileURL
+
         do {
-            let session = try DocumentSession(url: url)
+            let session = try DocumentSession(url: standardizedURL)
             activeSession = session
-            recentFilesStore.add(url: url)
+            recentFilesStore.add(url: standardizedURL)
+            selectedRecentPath = standardizedURL.path
             mode = appSettings.defaultOpenMode
             errorMessage = nil
             return session
         } catch {
-            errorMessage = "Failed to open \(url.path): \(error.localizedDescription)"
+            errorMessage = "Failed to open \(standardizedURL.path): \(error.localizedDescription)"
             return nil
         }
     }
