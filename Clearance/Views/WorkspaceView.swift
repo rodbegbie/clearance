@@ -87,6 +87,7 @@ struct WorkspaceView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(.leading, 1)
             .overlay(alignment: .topTrailing) {
                 if isPopOutDropTargeted {
                     Label("Drop To Pop Out", systemImage: "arrow.up.forward.square")
@@ -138,7 +139,6 @@ struct WorkspaceView: View {
             hasVisibleOutline: isOutlineVisible,
             canShowOutline: canShowOutlineControls
         ))
-        .toolbarRole(.editor)
         .toolbar {
             ToolbarItemGroup(placement: .navigation) {
                 Button {
@@ -147,7 +147,6 @@ struct WorkspaceView: View {
                     Image(systemName: "chevron.backward")
                 }
                 .help("Back")
-                .controlSize(.small)
                 .disabled(!viewModel.canNavigateBack)
 
                 Button {
@@ -156,7 +155,6 @@ struct WorkspaceView: View {
                     Image(systemName: "chevron.forward")
                 }
                 .help("Forward")
-                .controlSize(.small)
                 .disabled(!viewModel.canNavigateForward)
             }
 
@@ -168,8 +166,6 @@ struct WorkspaceView: View {
                     }
                     .labelsHidden()
                     .pickerStyle(.segmented)
-                    .controlSize(.small)
-                    .frame(width: 124)
                 }
             }
 
@@ -180,7 +176,6 @@ struct WorkspaceView: View {
                     } label: {
                         Image(systemName: "sidebar.right")
                     }
-                    .controlSize(.small)
                     .help(isOutlineVisible ? "Hide Outline" : "Show Outline")
                 }
             }

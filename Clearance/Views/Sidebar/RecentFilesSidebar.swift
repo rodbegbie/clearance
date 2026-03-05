@@ -49,7 +49,6 @@ struct RecentFilesSidebar: View {
             .listStyle(.sidebar)
             .animation(.snappy(duration: 0.26), value: entries.map { "\($0.path)|\($0.lastOpenedAt.timeIntervalSinceReferenceDate)" })
         }
-        .frame(maxHeight: .infinity, alignment: .top)
     }
 
     private var groupedEntries: [RecentFilesSection] {
