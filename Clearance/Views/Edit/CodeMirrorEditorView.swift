@@ -35,15 +35,22 @@ struct CodeMirrorEditorView: NSViewRepresentable {
         textView.isAutomaticDataDetectionEnabled = false
         textView.smartInsertDeleteEnabled = false
         textView.usesAdaptiveColorMappingForDarkAppearance = true
-        textView.backgroundColor = .textBackgroundColor
-        textView.textColor = .labelColor
-        textView.insertionPointColor = .labelColor
         textView.font = NSFont.monospacedSystemFont(ofSize: 14, weight: .regular)
         textView.delegate = context.coordinator
         textView.string = text
 
         context.coordinator.textView = textView
+        context.coordinator.applyTheme(to: textView)
         context.coordinator.highlighter.apply(to: textView)
+        textView.onAppearanceDidChange = { [weak textView, weak coordinator = context.coordinator] in
+            guard let textView,
+                  let coordinator else {
+                return
+            }
+
+            coordinator.applyTheme(to: textView)
+            coordinator.highlighter.apply(to: textView)
+        }
 
         scrollView.documentView = textView
         return scrollView
@@ -93,10 +100,22 @@ struct CodeMirrorEditorView: NSViewRepresentable {
                 parent.text = latest
             }
         }
+
+        func applyTheme(to textView: NSTextView) {
+            textView.backgroundColor = SolarizedPalette.editorBackground
+            textView.textColor = SolarizedPalette.text
+            textView.insertionPointColor = SolarizedPalette.insertionPoint
+            textView.selectedTextAttributes = [
+                .backgroundColor: SolarizedPalette.selectionBackground,
+                .foregroundColor: SolarizedPalette.selectionText
+            ]
+        }
     }
 }
 
 final class EditorTextView: NSTextView {
+    var onAppearanceDidChange: (() -> Void)?
+
     private lazy var editorUndoManager: UndoManager = {
         let manager = UndoManager()
         manager.levelsOfUndo = 100_000
@@ -105,6 +124,11 @@ final class EditorTextView: NSTextView {
 
     override var undoManager: UndoManager? {
         editorUndoManager
+    }
+
+    override func viewDidChangeEffectiveAppearance() {
+        super.viewDidChangeEffectiveAppearance()
+        onAppearanceDidChange?()
     }
 }
 
@@ -176,32 +200,32 @@ final class MarkdownSyntaxHighlighter {
     private var baseAttributes: [NSAttributedString.Key: Any] {
         [
             .font: NSFont.monospacedSystemFont(ofSize: 14, weight: .regular),
-            .foregroundColor: NSColor.labelColor
+            .foregroundColor: SolarizedPalette.text
         ]
     }
 
     private var frontmatterAttributes: [NSAttributedString.Key: Any] {
         [
             .font: NSFont.monospacedSystemFont(ofSize: 13.5, weight: .regular),
-            .foregroundColor: NSColor.systemTeal
+            .foregroundColor: SolarizedPalette.frontmatter
         ]
     }
 
     private var blockquoteAttributes: [NSAttributedString.Key: Any] {
         [
-            .foregroundColor: NSColor.secondaryLabelColor
+            .foregroundColor: SolarizedPalette.secondaryText
         ]
     }
 
     private var listMarkerAttributes: [NSAttributedString.Key: Any] {
         [
-            .foregroundColor: NSColor.systemOrange
+            .foregroundColor: SolarizedPalette.listMarker
         ]
     }
 
     private var linkAttributes: [NSAttributedString.Key: Any] {
         [
-            .foregroundColor: NSColor.systemBlue,
+            .foregroundColor: SolarizedPalette.link,
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
     }
@@ -221,16 +245,16 @@ final class MarkdownSyntaxHighlighter {
     private var inlineCodeAttributes: [NSAttributedString.Key: Any] {
         [
             .font: NSFont.monospacedSystemFont(ofSize: 13, weight: .regular),
-            .foregroundColor: NSColor.systemBrown,
-            .backgroundColor: NSColor.tertiaryLabelColor.withAlphaComponent(0.16)
+            .foregroundColor: SolarizedPalette.inlineCodeText,
+            .backgroundColor: SolarizedPalette.inlineCodeBackground
         ]
     }
 
     private var fencedCodeAttributes: [NSAttributedString.Key: Any] {
         [
             .font: NSFont.monospacedSystemFont(ofSize: 13, weight: .regular),
-            .foregroundColor: NSColor.systemBrown,
-            .backgroundColor: NSColor.tertiaryLabelColor.withAlphaComponent(0.12)
+            .foregroundColor: SolarizedPalette.codeBlockText,
+            .backgroundColor: SolarizedPalette.codeBlockBackground
         ]
     }
 
@@ -251,7 +275,41 @@ final class MarkdownSyntaxHighlighter {
 
         return [
             .font: NSFont.monospacedSystemFont(ofSize: size, weight: .semibold),
-            .foregroundColor: NSColor.systemIndigo
+            .foregroundColor: SolarizedPalette.heading
         ]
+    }
+}
+
+private enum SolarizedPalette {
+    static let editorBackground = dynamic(light: hex(0xFDF6E3), dark: hex(0x002B36))
+    static let text = dynamic(light: hex(0x657B83), dark: hex(0x839496))
+    static let secondaryText = dynamic(light: hex(0x586E75), dark: hex(0x586E75))
+    static let heading = dynamic(light: hex(0x268BD2), dark: hex(0x5FA8D7))
+    static let frontmatter = dynamic(light: hex(0x2AA198), dark: hex(0x7BD1BD))
+    static let listMarker = dynamic(light: hex(0xCB4B16), dark: hex(0xCB4B16))
+    static let link = dynamic(light: hex(0x268BD2), dark: hex(0x5FA8D7))
+    static let inlineCodeText = dynamic(light: hex(0x859900), dark: hex(0x7BD1BD))
+    static let inlineCodeBackground = dynamic(light: hex(0xEEE8D5, alpha: 0.95), dark: hex(0x073642, alpha: 0.88))
+    static let codeBlockText = dynamic(light: hex(0x586E75), dark: hex(0xC8D9DD))
+    static let codeBlockBackground = dynamic(light: hex(0xEEE8D5), dark: hex(0x073642))
+    static let insertionPoint = dynamic(light: hex(0x268BD2), dark: hex(0x2AA198))
+    static let selectionBackground = dynamic(light: hex(0x268BD2, alpha: 0.28), dark: hex(0x268BD2, alpha: 0.42))
+    static let selectionText = dynamic(light: hex(0x002B36), dark: hex(0xFDF6E3))
+
+    private static func dynamic(light: NSColor, dark: NSColor) -> NSColor {
+        NSColor(name: nil) { appearance in
+            let match = appearance.bestMatch(from: [.darkAqua, .aqua])
+            if match == .darkAqua {
+                return dark
+            }
+            return light
+        }
+    }
+
+    private static func hex(_ value: UInt32, alpha: CGFloat = 1.0) -> NSColor {
+        let red = CGFloat((value >> 16) & 0xFF) / 255.0
+        let green = CGFloat((value >> 8) & 0xFF) / 255.0
+        let blue = CGFloat(value & 0xFF) / 255.0
+        return NSColor(calibratedRed: red, green: green, blue: blue, alpha: alpha)
     }
 }

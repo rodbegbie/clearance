@@ -1,27 +1,78 @@
 :root {
-  color-scheme: light;
+  color-scheme: light dark;
+  --base03: #002b36;
+  --base02: #073642;
+  --base01: #586e75;
+  --base00: #657b83;
+  --base0: #839496;
+  --base1: #93a1a1;
+  --base2: #eee8d5;
+  --base3: #fdf6e3;
+  --yellow: #b58900;
+  --orange: #cb4b16;
+  --red: #dc322f;
+  --magenta: #d33682;
+  --violet: #6c71c4;
+  --blue: #268bd2;
+  --cyan: #2aa198;
+  --green: #859900;
+  --bg: var(--base3);
+  --bg-grad: #f8f1dd;
+  --surface: rgba(238, 232, 213, 0.94);
+  --surface-border: rgba(88, 110, 117, 0.26);
+  --surface-shadow: 0 14px 32px rgba(88, 110, 117, 0.2);
+  --text: var(--base00);
+  --muted: var(--base01);
+  --heading: var(--blue);
+  --link: var(--blue);
+  --inline-code-bg: rgba(147, 161, 161, 0.26);
+  --inline-code-text: var(--green);
+  --code-bg: #0f3742;
+  --code-text: #d4e3e7;
+  --quote: var(--cyan);
+  --rule: rgba(88, 110, 117, 0.23);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: var(--base03);
+    --bg-grad: #03232c;
+    --surface: rgba(7, 54, 66, 0.9);
+    --surface-border: rgba(147, 161, 161, 0.25);
+    --surface-shadow: 0 16px 34px rgba(0, 0, 0, 0.45);
+    --text: var(--base0);
+    --muted: var(--base01);
+    --heading: #5fa8d7;
+    --link: #5fa8d7;
+    --inline-code-bg: rgba(147, 161, 161, 0.14);
+    --inline-code-text: #7bd1bd;
+    --code-bg: #00232c;
+    --code-text: #c8d9dd;
+    --quote: #55b8a8;
+    --rule: rgba(147, 161, 161, 0.22);
+  }
 }
 
 body {
   margin: 0;
   font-family: Georgia, "Iowan Old Style", serif;
-  background: radial-gradient(circle at 15% 0%, #fff9ec 0%, #f2ece2 45%, #ece5dc 100%);
-  color: #211d18;
+  background: linear-gradient(180deg, var(--bg-grad) 0%, var(--bg) 240px);
+  color: var(--text);
 }
 
 .document {
-  max-width: 900px;
-  margin: 36px auto;
+  max-width: 920px;
+  margin: 34px auto;
   padding: 0 24px 72px;
 }
 
 .frontmatter {
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid #d8cfbf;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
   border-radius: 14px;
   padding: 14px 18px;
   margin-bottom: 20px;
-  backdrop-filter: blur(2px);
+  box-shadow: var(--surface-shadow);
 }
 
 .frontmatter h2 {
@@ -30,7 +81,7 @@ body {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #6f6555;
+  color: var(--muted);
 }
 
 table {
@@ -42,21 +93,21 @@ th,
 td {
   text-align: left;
   vertical-align: top;
-  border-top: 1px solid #e8dece;
+  border-top: 1px solid var(--rule);
   padding: 8px 10px;
   font-size: 13px;
 }
 
 th {
   width: 34%;
-  color: #6f6657;
+  color: var(--muted);
 }
 
 .markdown {
-  background: rgba(255, 255, 255, 0.84);
-  border: 1px solid #d8cfbf;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
   border-radius: 14px;
-  box-shadow: 0 12px 28px rgba(43, 33, 22, 0.09);
+  box-shadow: var(--surface-shadow);
   padding: 28px;
 }
 
@@ -64,6 +115,7 @@ th {
 .markdown h2,
 .markdown h3,
 .markdown h4 {
+  color: var(--heading);
   font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
   letter-spacing: -0.01em;
 }
@@ -73,16 +125,39 @@ th {
   line-height: 1.68;
 }
 
+.markdown a {
+  color: var(--link);
+}
+
+.markdown blockquote {
+  border-left: 3px solid var(--quote);
+  margin-left: 0;
+  padding-left: 14px;
+  color: var(--muted);
+}
+
+.markdown hr {
+  border: none;
+  border-top: 1px solid var(--rule);
+}
+
 .markdown pre {
-  background: #1f2430;
-  color: #f2f5f8;
+  background: var(--code-bg);
+  color: var(--code-text);
   border-radius: 10px;
   padding: 14px;
   overflow-x: auto;
 }
 
+.markdown pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
 .markdown code {
-  background: #f0ebdf;
+  background: var(--inline-code-bg);
+  color: var(--inline-code-text);
   border-radius: 6px;
   padding: 2px 6px;
 }
