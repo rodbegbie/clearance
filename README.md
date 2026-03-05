@@ -1,100 +1,52 @@
 # Clearance
 
-<img src="assets/branding/clearance-app-icon.svg" alt="Clearance Icon" width="140" />
+<img src="assets/branding/clearance-app-icon.svg" alt="Clearance Icon" width="96" />
 
-Clearance is a native macOS Markdown workspace focused on YAML-frontmatter Markdown files.
+Clearance is a native macOS app for reading and editing Markdown files, with first-class support for YAML-frontmatter documents.
 
-## Current V1 Capabilities
+For developer setup, build, release, and CI details, see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
 
-- Open `.md` / Markdown files from the app.
-- Sidebar of recently opened files (file name + full path), newest first.
-- View mode:
-  - Beautiful rendered Markdown document.
-  - Frontmatter rendered as a full metadata table.
-- Edit mode:
-  - Syntax-highlighted Markdown editing via embedded CodeMirror.
-  - Deep undo history (`undoDepth: 10000`).
-- Autosave with debounced writes while editing.
-- Default open mode setting (`View` or `Edit`).
-- Pop-out document windows from the workspace.
-- `.md` file association declared in app `Info.plist`.
+## Install
 
-## Build and Run
+1. Download the latest release from GitHub.
+2. Open the `.dmg` (or `.zip`) and move `Clearance.app` into `Applications`.
+3. Launch Clearance and open a Markdown file.
 
-1. Generate the Xcode project:
+## What You Can Do
 
-```bash
-xcodegen generate
-```
+- Open `.md` and `.txt` files.
+- Keep a recent-files sidebar with full paths, grouped by recency.
+- Switch between:
+  - `View`: rendered document mode
+  - `Edit`: full-pane Markdown editing with syntax highlighting
+- Use the right-side outline for heading navigation when a document has headings.
+- Open selected files in new windows.
+- Follow Markdown links to local files or web URLs.
+- Auto-save while editing.
 
-2. Build:
+## Keyboard Shortcuts
 
-```bash
-xcodebuild -project Clearance.xcodeproj -scheme Clearance -configuration Debug -destination 'platform=macOS' build
-```
+- `⌘O`: Open Markdown file
+- `⇧⌘O`: Open current document in a new window
+- `⌘F`: Find in document
+- `⇧⌘F`: Find previous match
+- `⌘P`: Print (rendered output)
+- `⌘Z`: Undo (Edit mode)
+- `⇧⌘Z`: Redo (Edit mode)
+- `⌘1`: View mode
+- `⌘2`: Edit mode
 
-3. Test:
+## Privacy and Runtime Behavior
 
-```bash
-xcodebuild test -project Clearance.xcodeproj -scheme Clearance -destination 'platform=macOS'
-```
+- Clearance is fully local at runtime for normal editing and rendering.
+- No CDN dependencies are used.
+- Network activity is optional and limited to things you explicitly trigger, such as opening web links or checking for updates.
 
-4. Open in Xcode and run `Clearance`.
+## Updates
 
-## Auto Releases + Sparkle Updates
+Clearance uses Sparkle for in-app updates. You can use `Clearance → Check for Updates…` from the menu bar.
 
-Tag pushes (`v*`) run `.github/workflows/release.yml` to:
+## About
 
-- Build a Release app.
-- Codesign with Developer ID Application cert.
-- Notarize and staple.
-- Package `Clearance-<version>-macOS.zip`.
-- Generate and sign `appcast.xml` with Sparkle EdDSA keys.
-- Publish both files to the GitHub Release.
-- Automatically set:
-  - `CFBundleShortVersionString` from the git tag (e.g. `v0.0.5` -> `0.0.5`)
-  - `CFBundleVersion` from `GITHUB_RUN_NUMBER` (strictly increasing integer)
-
-The app uses:
-
-- `SUFeedURL = $(SPARKLE_FEED_URL)` (set to `https://github.com/<owner>/<repo>/releases/latest/download/appcast.xml` in CI builds).
-- `SUPublicEDKey = $(SPARKLE_PUBLIC_ED_KEY)`.
-
-If either value is missing, `Check for Updates…` is disabled at runtime.
-
-### Required GitHub Secrets
-
-- `DEVELOPER_ID_APPLICATION_CERT_BASE64`: base64-encoded `.p12` certificate.
-- `DEVELOPER_ID_APPLICATION_CERT_PASSWORD`: password for the `.p12`.
-- `DEVELOPER_ID_APPLICATION_SIGNING_IDENTITY`: full codesign identity string.
-- `APPLE_ID`: Apple ID email for notarization.
-- `APPLE_APP_SPECIFIC_PASSWORD`: app-specific password for notarization.
-- `APPLE_TEAM_ID`: Apple Developer Team ID.
-- `SPARKLE_PUBLIC_ED_KEY`: Sparkle public key.
-- `SPARKLE_PRIVATE_ED_KEY`: Sparkle private key.
-
-### Releasing
-
-1. Make sure all required secrets are configured.
-2. Create a version tag:
-
-```bash
-git tag v1.0.1
-git push origin v1.0.1
-```
-
-3. Wait for the `Build and Release` workflow to finish.
-
-## Asset Regeneration
-
-Regenerate the app icon assets from the in-repo source SVG:
-
-```bash
-scripts/generate-app-iconset.sh
-```
-
-## Notes
-
-- CodeMirror assets are vendored under `Clearance/Resources/vendor/codemirror` and loaded locally.
-- Autosave is currently debounce-based and writes directly to the source file.
-- External file-change conflict handling is not yet implemented.
+Copyright 2026 Prime Radiant  
+[https://primeradiant.com](https://primeradiant.com)
