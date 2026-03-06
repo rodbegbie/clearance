@@ -19,6 +19,8 @@ targets:
     platform: macOS
     sources:
       - path: Clearance
+      - path: CHANGELOG.md
+        buildPhase: resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jesse.Clearance

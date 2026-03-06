@@ -105,4 +105,68 @@ final class AppSettingsTests: XCTestCase {
 
         XCTAssertEqual(second.renderedTextScale, 1.1, accuracy: 0.001)
     }
+
+    func testFirstLaunchDoesNotPresentReleaseNotesAndRecordsVersion() {
+        let suite = UUID().uuidString
+        let defaults = UserDefaults(suiteName: suite)!
+        defaults.removePersistentDomain(forName: suite)
+
+        let first = AppSettings(
+            userDefaults: defaults,
+            storageKey: "defaultMode",
+            themeStorageKey: "theme",
+            appearanceStorageKey: "appearance",
+            renderedTextScaleStorageKey: "renderedTextScale",
+            releaseNotesVersionStorageKey: "releaseNotesVersion"
+        )
+
+        XCTAssertNil(first.releaseNotesVersionToPresent(currentVersion: "1.0.3"))
+
+        let second = AppSettings(
+            userDefaults: defaults,
+            storageKey: "defaultMode",
+            themeStorageKey: "theme",
+            appearanceStorageKey: "appearance",
+            renderedTextScaleStorageKey: "renderedTextScale",
+            releaseNotesVersionStorageKey: "releaseNotesVersion"
+        )
+
+        XCTAssertNil(second.releaseNotesVersionToPresent(currentVersion: "1.0.3"))
+    }
+
+    func testUpdatedVersionPresentsReleaseNotesOnce() {
+        let suite = UUID().uuidString
+        let defaults = UserDefaults(suiteName: suite)!
+        defaults.removePersistentDomain(forName: suite)
+
+        let first = AppSettings(
+            userDefaults: defaults,
+            storageKey: "defaultMode",
+            themeStorageKey: "theme",
+            appearanceStorageKey: "appearance",
+            renderedTextScaleStorageKey: "renderedTextScale",
+            releaseNotesVersionStorageKey: "releaseNotesVersion"
+        )
+        XCTAssertNil(first.releaseNotesVersionToPresent(currentVersion: "1.0.2"))
+
+        let second = AppSettings(
+            userDefaults: defaults,
+            storageKey: "defaultMode",
+            themeStorageKey: "theme",
+            appearanceStorageKey: "appearance",
+            renderedTextScaleStorageKey: "renderedTextScale",
+            releaseNotesVersionStorageKey: "releaseNotesVersion"
+        )
+        XCTAssertEqual(second.releaseNotesVersionToPresent(currentVersion: "1.0.3"), "1.0.3")
+
+        let third = AppSettings(
+            userDefaults: defaults,
+            storageKey: "defaultMode",
+            themeStorageKey: "theme",
+            appearanceStorageKey: "appearance",
+            renderedTextScaleStorageKey: "renderedTextScale",
+            releaseNotesVersionStorageKey: "releaseNotesVersion"
+        )
+        XCTAssertNil(third.releaseNotesVersionToPresent(currentVersion: "1.0.3"))
+    }
 }

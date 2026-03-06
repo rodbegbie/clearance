@@ -5,6 +5,7 @@ import SwiftUI
 struct ClearanceApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @StateObject private var appSettings = AppSettings()
+    @State private var hasCheckedForUpdatedReleaseNotes = false
     private let sparkleUpdateController = SparkleUpdateController()
     private let popoutWindowController = PopoutWindowController()
 
@@ -15,10 +16,16 @@ struct ClearanceApp: App {
                 popoutWindowController: popoutWindowController
             )
             .preferredColorScheme(preferredColorScheme)
+            .onAppear {
+                showUpdatedReleaseNotesIfNeeded()
+            }
         }
         .windowToolbarStyle(.unified)
         .commands {
-            ClearanceCommands(sparkleUpdateController: sparkleUpdateController)
+            ClearanceCommands(
+                sparkleUpdateController: sparkleUpdateController,
+                showReleaseNotes: { showReleaseNotes() }
+            )
         }
 
         Settings {
@@ -36,6 +43,38 @@ struct ClearanceApp: App {
         case .dark:
             return .dark
         }
+    }
+
+    private func showUpdatedReleaseNotesIfNeeded() {
+        guard !hasCheckedForUpdatedReleaseNotes else {
+            return
+        }
+
+        hasCheckedForUpdatedReleaseNotes = true
+
+        let catalog = ReleaseNotesCatalog()
+        guard let releaseNotesURL = catalog.documentURL,
+              let currentVersion = catalog.currentVersion,
+              appSettings.releaseNotesVersionToPresent(currentVersion: currentVersion) != nil else {
+            return
+        }
+
+        DispatchQueue.main.async {
+            requestDocumentOpen(releaseNotesURL)
+        }
+    }
+
+    private func showReleaseNotes() {
+        let catalog = ReleaseNotesCatalog()
+        guard let releaseNotesURL = catalog.documentURL else {
+            return
+        }
+
+        requestDocumentOpen(releaseNotesURL)
+    }
+
+    private func requestDocumentOpen(_ url: URL) {
+        NotificationCenter.default.post(name: .clearanceOpenURLs, object: [url])
     }
 }
 
@@ -106,9 +145,14 @@ extension FocusedValues {
 private struct ClearanceCommands: Commands {
     @FocusedValue(\.workspaceCommandActions) private var actions
     private let sparkleUpdateController: SparkleUpdateController
+    private let showReleaseNotes: () -> Void
 
-    init(sparkleUpdateController: SparkleUpdateController) {
+    init(
+        sparkleUpdateController: SparkleUpdateController,
+        showReleaseNotes: @escaping () -> Void
+    ) {
         self.sparkleUpdateController = sparkleUpdateController
+        self.showReleaseNotes = showReleaseNotes
     }
 
     var body: some Commands {
@@ -123,6 +167,10 @@ private struct ClearanceCommands: Commands {
                 sparkleUpdateController.checkForUpdates()
             }
             .disabled(!sparkleUpdateController.canCheckForUpdates)
+
+            Button("Show Release Notes") {
+                showReleaseNotes()
+            }
         }
 
         CommandGroup(replacing: .newItem) {

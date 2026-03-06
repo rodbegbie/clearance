@@ -227,19 +227,22 @@ final class AppSettings: ObservableObject {
     private let themeStorageKey: String
     private let appearanceStorageKey: String
     private let renderedTextScaleStorageKey: String
+    private let releaseNotesVersionStorageKey: String
 
     init(
         userDefaults: UserDefaults = .standard,
         storageKey: String = "defaultOpenMode",
         themeStorageKey: String = "theme",
         appearanceStorageKey: String = "appearance",
-        renderedTextScaleStorageKey: String = "renderedTextScale"
+        renderedTextScaleStorageKey: String = "renderedTextScale",
+        releaseNotesVersionStorageKey: String = "releaseNotesVersion"
     ) {
         self.userDefaults = userDefaults
         self.openModeStorageKey = storageKey
         self.themeStorageKey = themeStorageKey
         self.appearanceStorageKey = appearanceStorageKey
         self.renderedTextScaleStorageKey = renderedTextScaleStorageKey
+        self.releaseNotesVersionStorageKey = releaseNotesVersionStorageKey
 
         if let stored = userDefaults.string(forKey: storageKey),
            let mode = WorkspaceMode(rawValue: stored) {
@@ -268,5 +271,23 @@ final class AppSettings: ObservableObject {
         } else {
             renderedTextScale = 1.0
         }
+    }
+
+    func releaseNotesVersionToPresent(currentVersion: String?) -> String? {
+        guard let currentVersion = currentVersion?
+            .trimmingCharacters(in: .whitespacesAndNewlines),
+              !currentVersion.isEmpty else {
+            return nil
+        }
+
+        let previousVersion = userDefaults.string(forKey: releaseNotesVersionStorageKey)
+        userDefaults.set(currentVersion, forKey: releaseNotesVersionStorageKey)
+
+        guard let previousVersion,
+              previousVersion != currentVersion else {
+            return nil
+        }
+
+        return currentVersion
     }
 }
