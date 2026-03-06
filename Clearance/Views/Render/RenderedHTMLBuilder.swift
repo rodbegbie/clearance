@@ -110,6 +110,10 @@ struct RenderedHTMLBuilder {
                 replacement = """
                 <div class=\"mermaid\" data-clearance-diagram=\"mermaid\">\(escapeHTML(decodedCode.trimmingCharacters(in: .whitespacesAndNewlines)))</div>
                 """
+            } else if ["dot", "graphviz"].contains(language) {
+                replacement = """
+                <div class=\"graphviz\" data-clearance-diagram=\"graphviz\">\(escapeHTML(decodedCode.trimmingCharacters(in: .whitespacesAndNewlines)))</div>
+                """
             } else if ["math", "latex", "tex", "katex"].contains(language) {
                 replacement = """
                 <div class=\"math-block clearance-math-block\" data-clearance-math-block=\"true\">\(escapeHTML(decodedCode.trimmingCharacters(in: .whitespacesAndNewlines)))</div>
@@ -373,6 +377,7 @@ struct RenderedHTMLBuilder {
             ("katex", vendorScript(named: "katex.min")),
             ("auto-render", vendorScript(named: "auto-render.min")),
             ("mermaid", vendorScript(named: "mermaid.min")),
+            ("graphviz", vendorScript(named: "viz-global")),
             ("bootstrap", richRendererBootstrapScript(appearance: appearance))
         ]
 
@@ -415,6 +420,51 @@ struct RenderedHTMLBuilder {
 
         return """
         (() => {
+          let graphvizInstancePromise;
+
+          const graphvizInstance = () => {
+            if (!window.Viz || typeof window.Viz.instance !== 'function') {
+              return Promise.resolve(null);
+            }
+            if (!graphvizInstancePromise) {
+              graphvizInstancePromise = window.Viz.instance().catch((error) => {
+                console.warn('Graphviz setup failed:', error);
+                graphvizInstancePromise = null;
+                return null;
+              });
+            }
+            return graphvizInstancePromise;
+          };
+
+          const sanitizeGraphvizSVG = (svg) => {
+            if (!(svg instanceof SVGElement)) {
+              return null;
+            }
+
+            for (const unsafeNode of svg.querySelectorAll('script, foreignObject, iframe, object, embed')) {
+              unsafeNode.remove();
+            }
+
+            const walker = document.createTreeWalker(svg, NodeFilter.SHOW_ELEMENT);
+            let node = svg;
+            while (node) {
+              for (const attribute of Array.from(node.attributes)) {
+                const name = attribute.name.toLowerCase();
+                if (name.startsWith('on')) {
+                  node.removeAttribute(attribute.name);
+                  continue;
+                }
+
+                if ((name === 'href' || name === 'xlink:href') && /^\\s*javascript:/i.test(attribute.value)) {
+                  node.removeAttribute(attribute.name);
+                }
+              }
+              node = walker.nextNode();
+            }
+
+            return svg;
+          };
+
           const renderMermaid = () => {
             if (!window.mermaid) { return; }
             try {
@@ -444,6 +494,34 @@ struct RenderedHTMLBuilder {
             }
           };
 
+          const renderGraphviz = async () => {
+            const containers = document.querySelectorAll('article.markdown .graphviz[data-clearance-diagram="graphviz"]');
+            if (!containers.length) { return; }
+
+            const viz = await graphvizInstance();
+            if (!viz || typeof viz.renderSVGElement !== 'function') { return; }
+
+            for (const container of containers) {
+              const source = (container.textContent || '').trim();
+              if (!source) { continue; }
+
+              container.setAttribute('data-clearance-diagram-state', 'source');
+              try {
+                const svg = await viz.renderSVGElement(source);
+                const safeSVG = sanitizeGraphvizSVG(svg);
+                if (!safeSVG) {
+                  throw new Error('Graphviz sanitizer rejected rendered SVG');
+                }
+
+                container.replaceChildren(safeSVG);
+                container.setAttribute('data-clearance-diagram-state', 'rendered');
+              } catch (error) {
+                container.setAttribute('data-clearance-diagram-state', 'failed');
+                console.warn('Graphviz render failed:', error);
+              }
+            }
+          };
+
           const renderInlineMath = () => {
             if (!window.renderMathInElement || !window.katex) { return; }
             try {
@@ -458,7 +536,7 @@ struct RenderedHTMLBuilder {
                 strict: 'ignore',
                 output: 'mathml',
                 ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-                ignoredClasses: ['clearance-math-block', 'mermaid']
+                ignoredClasses: ['clearance-math-block', 'mermaid', 'graphviz']
               });
             } catch (error) {
               console.warn('KaTeX inline render failed:', error);
@@ -469,6 +547,7 @@ struct RenderedHTMLBuilder {
             renderMermaid();
             renderMathBlocks();
             renderInlineMath();
+            void renderGraphviz();
           };
 
           if (document.readyState === 'loading') {

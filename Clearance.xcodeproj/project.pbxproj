@@ -62,6 +62,7 @@
 		C0D9F459C94D98596C1519A5 /* DocumentSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47364E84B7FF3916B7C3E787 /* DocumentSession.swift */; };
 		C32D8F96D423DE3271225ACB /* RecentFileEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BAB78E34398153FEC9E98E6 /* RecentFileEntry.swift */; };
 		C8187680DE6137868147E736 /* FileIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA529592EDFA82E161C9097C /* FileIO.swift */; };
+		C97933E931C12C53B728B79D /* viz-global.js in Resources */ = {isa = PBXBuildFile; fileRef = 6C44026898E5AC222E455D4C /* viz-global.js */; };
 		C9D208AD5A350892D1112EB9 /* render.css in Resources */ = {isa = PBXBuildFile; fileRef = 2D9C2D4EBF17F857B3EE9124 /* render.css */; };
 		D0FDE4FA090E278F8A6C0237 /* EditorTemplateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6B8061492692C913AD22DB /* EditorTemplateTests.swift */; };
 		D65080CF3E17BAF91FB35E28 /* Yams in Frameworks */ = {isa = PBXBuildFile; productRef = 3214E95FEEF579789CB33DD9 /* Yams */; };
@@ -123,6 +124,7 @@
 		65CF5A612222ECD04F8BFB53 /* markdown.min.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = markdown.min.js; sourceTree = "<group>"; };
 		6AFE11E56690980C2F88FF59 /* mermaid.min.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = mermaid.min.js; sourceTree = "<group>"; };
 		6B22E26DA34D118F0F697066 /* editor.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = editor.html; sourceTree = "<group>"; };
+		6C44026898E5AC222E455D4C /* viz-global.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "viz-global.js"; sourceTree = "<group>"; };
 		6E25A6153BF3FEF55B6AC020 /* RenderedMarkdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderedMarkdownView.swift; sourceTree = "<group>"; };
 		71149C72CDE405EF2F562E7C /* MarkdownLinkRouterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownLinkRouterTests.swift; sourceTree = "<group>"; };
 		71FB4C76A50625A8D0C2BB15 /* RecentFilesSidebar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentFilesSidebar.swift; sourceTree = "<group>"; };
@@ -136,6 +138,7 @@
 		948CC2F7FFC06E9D6712EB0B /* ParsedMarkdownDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParsedMarkdownDocument.swift; sourceTree = "<group>"; };
 		9A2B8249245BF603D879F69A /* ClearanceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClearanceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DB17ADA4814DFD7553DA44E /* FrontmatterParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrontmatterParser.swift; sourceTree = "<group>"; };
+		A8B28FB131745D2839D55D9C /* LICENSE */ = {isa = PBXFileReference; path = LICENSE; sourceTree = "<group>"; };
 		AE323A2BC00DCF2D5C3ED824 /* WorkspaceViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceViewModelTests.swift; sourceTree = "<group>"; };
 		B15BDD244259C213E33D2E9A /* LICENSE */ = {isa = PBXFileReference; path = LICENSE; sourceTree = "<group>"; };
 		B29CC9D7F42CDF29ED53EE3A /* RemoteDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteDocument.swift; sourceTree = "<group>"; };
@@ -339,6 +342,15 @@
 			path = katex;
 			sourceTree = "<group>";
 		};
+		B16DD5782E589ACF1DCACFFB /* viz */ = {
+			isa = PBXGroup;
+			children = (
+				A8B28FB131745D2839D55D9C /* LICENSE */,
+				6C44026898E5AC222E455D4C /* viz-global.js */,
+			);
+			path = viz;
+			sourceTree = "<group>";
+		};
 		B22506C476DD0E82A6AF5940 /* markdown */ = {
 			isa = PBXGroup;
 			children = (
@@ -447,6 +459,7 @@
 				CC5823DBD7E3515EE97FD104 /* codemirror */,
 				A485BA825C612279AC5E425E /* katex */,
 				8B8C370855C758E48F2D7CDF /* mermaid */,
+				B16DD5782E589ACF1DCACFFB /* viz */,
 			);
 			path = vendor;
 			sourceTree = "<group>";
@@ -572,6 +585,7 @@
 				45B41A0209726F465DCE5AA8 /* meta.min.js in Resources */,
 				87A737D6367AEFF84D29E3A2 /* neo.min.css in Resources */,
 				C9D208AD5A350892D1112EB9 /* render.css in Resources */,
+				C97933E931C12C53B728B79D /* viz-global.js in Resources */,
 				EE47B22899513360C90F8CB8 /* xml.min.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
