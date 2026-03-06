@@ -1,4 +1,4 @@
-# Changelog
+# Clearance Changelog
 
 ## 1.0.4 - March 6, 2026
 
