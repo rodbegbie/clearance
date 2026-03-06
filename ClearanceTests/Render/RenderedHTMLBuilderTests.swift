@@ -280,6 +280,26 @@ final class RenderedHTMLBuilderTests: XCTestCase {
         XCTAssertTrue(html.contains("sha256-"))
     }
 
+    func testGraphvizSVGScalesToAvailableWidth() {
+        let body = """
+        ```dot
+        digraph tdd_cycle {
+          rankdir=LR;
+          red [label="RED\\nWrite failing test", shape=box, style=filled, fillcolor="#ffcccc"];
+          verify_red [label="Verify fails\\ncorrectly", shape=diamond];
+          red -> verify_red;
+        }
+        ```
+        """
+        let document = ParsedMarkdownDocument(body: body, flattenedFrontmatter: [:])
+
+        let html = RenderedHTMLBuilder().build(document: document)
+
+        XCTAssertTrue(html.contains(".markdown .graphviz svg"))
+        XCTAssertTrue(html.contains("max-width: 100%"))
+        XCTAssertTrue(html.contains("height: auto"))
+    }
+
     func testRemoteContentAddsStrictContentSecurityPolicyDirectives() {
         let document = ParsedMarkdownDocument(body: "Hello", flattenedFrontmatter: [:])
 
