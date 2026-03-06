@@ -185,15 +185,14 @@ struct WorkspaceView: View {
                 }
                 .help("Forward")
                 .disabled(!viewModel.canNavigateForward)
-            }
 
-            ToolbarItem(placement: .principal) {
                 AddressBarView(
                     activeURL: viewModel.activeDocumentURL,
                     isLoading: viewModel.isLoadingRemoteDocument
                 ) { rawValue in
                     openDocumentFromAddressBar(rawValue)
                 }
+                .layoutPriority(1)
             }
 
             ToolbarItem(placement: .primaryAction) {
