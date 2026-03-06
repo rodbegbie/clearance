@@ -68,6 +68,7 @@
 		D65080CF3E17BAF91FB35E28 /* Yams in Frameworks */ = {isa = PBXBuildFile; productRef = 3214E95FEEF579789CB33DD9 /* Yams */; };
 		D8D2E2943909BBFCCBD5FF73 /* WorkspaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44612D18F959FD7F2CDD3DBE /* WorkspaceView.swift */; };
 		D970C3357EE1E3477F13B53B /* AddressBarFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08D1A3EA9745A77719072467 /* AddressBarFormatterTests.swift */; };
+		E1A0359C03992FAC34EE15D2 /* RenderedMarkdownHTMLFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EA58D469C13F9C83C665031 /* RenderedMarkdownHTMLFormatter.swift */; };
 		E4D6121D472881B9127B3C0C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1687B28E91B80164C0B4D2 /* AppDelegate.swift */; };
 		EA3DA47B52568894E31CC91C /* ReleaseNotesCatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F69F1DE5EB87BE702524F527 /* ReleaseNotesCatalogTests.swift */; };
 		EBDD71F95FED42F98738C1DC /* Markdown in Frameworks */ = {isa = PBXBuildFile; productRef = 1AAE9A7206ED70442383E7E7 /* Markdown */; };
@@ -138,6 +139,7 @@
 		948CC2F7FFC06E9D6712EB0B /* ParsedMarkdownDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParsedMarkdownDocument.swift; sourceTree = "<group>"; };
 		9A2B8249245BF603D879F69A /* ClearanceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClearanceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DB17ADA4814DFD7553DA44E /* FrontmatterParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrontmatterParser.swift; sourceTree = "<group>"; };
+		9EA58D469C13F9C83C665031 /* RenderedMarkdownHTMLFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderedMarkdownHTMLFormatter.swift; sourceTree = "<group>"; };
 		A8B28FB131745D2839D55D9C /* LICENSE */ = {isa = PBXFileReference; path = LICENSE; sourceTree = "<group>"; };
 		AE323A2BC00DCF2D5C3ED824 /* WorkspaceViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceViewModelTests.swift; sourceTree = "<group>"; };
 		B15BDD244259C213E33D2E9A /* LICENSE */ = {isa = PBXFileReference; path = LICENSE; sourceTree = "<group>"; };
@@ -296,6 +298,7 @@
 			isa = PBXGroup;
 			children = (
 				80E283907E1D0642A9D67E41 /* RenderedHTMLBuilder.swift */,
+				9EA58D469C13F9C83C665031 /* RenderedMarkdownHTMLFormatter.swift */,
 				6E25A6153BF3FEF55B6AC020 /* RenderedMarkdownView.swift */,
 			);
 			path = Render;
@@ -648,6 +651,7 @@
 				07CD5CDBAB873710D8B9EF7A /* RemoteDocument.swift in Sources */,
 				083028818E106C3DA10F0BCB /* RemoteDocumentFetcher.swift in Sources */,
 				7C43DA6A2F1FA6221B00ED34 /* RenderedHTMLBuilder.swift in Sources */,
+				E1A0359C03992FAC34EE15D2 /* RenderedMarkdownHTMLFormatter.swift in Sources */,
 				F98B84588030978CFABA8184 /* RenderedMarkdownView.swift in Sources */,
 				B92216E2C64C1F77FB9194E5 /* SettingsView.swift in Sources */,
 				B95EA8B4970673C5C1ACFFA1 /* SparkleConfiguration.swift in Sources */,

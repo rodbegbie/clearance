@@ -29,7 +29,10 @@ struct RenderedHTMLBuilder {
         textScale: Double = 1.0,
         isRemoteContent: Bool = false
     ) -> String {
-        let bodyHTML = HTMLFormatter.format(document.body)
+        let bodyHTML = RenderedMarkdownHTMLFormatter.format(
+            Document(parsing: document.body),
+            rendersRawHTMLAsLiteral: !isRemoteContent
+        )
         let taskListHTML = transformTaskListItems(in: bodyHTML)
         let transformedBodyHTML = transformCodeBlocks(in: taskListHTML)
         let anchoredBodyHTML = injectHeadingIDs(in: transformedBodyHTML)

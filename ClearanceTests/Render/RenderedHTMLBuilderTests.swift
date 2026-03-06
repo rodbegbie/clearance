@@ -200,7 +200,7 @@ final class RenderedHTMLBuilderTests: XCTestCase {
         XCTAssertTrue(html.contains("Pending"))
     }
 
-    func testTransformsTaskListItemsWhenCheckboxTypeAttributeIsNotFirst() {
+    func testLocalRawHTMLTaskListMarkupRendersAsLiteralText() {
         let body = """
         <ul>
         <li><input disabled="" type="checkbox" checked="" /> <p>Done</p></li>
@@ -210,7 +210,9 @@ final class RenderedHTMLBuilderTests: XCTestCase {
 
         let html = RenderedHTMLBuilder().build(document: document)
 
-        XCTAssertTrue(html.contains("<li class=\"task-list-item\">"))
+        XCTAssertTrue(html.contains("&lt;ul&gt;"))
+        XCTAssertTrue(html.contains("&lt;input disabled=\"\" type=\"checkbox\" checked=\"\" /&gt;"))
+        XCTAssertFalse(html.contains("<li class=\"task-list-item\">"))
     }
 
     func testRendersGFMStrikethrough() {
@@ -220,6 +222,28 @@ final class RenderedHTMLBuilderTests: XCTestCase {
         let html = RenderedHTMLBuilder().build(document: document)
 
         XCTAssertTrue(html.contains("<del>struck</del>"))
+    }
+
+    func testInlineCodeEscapesAngleBracketPlaceholders() {
+        let body = #"**"Plan complete and saved to `docs/plans/<filename>.md`. Two execution options:"**"#
+        let document = ParsedMarkdownDocument(body: body, flattenedFrontmatter: [:])
+
+        let html = RenderedHTMLBuilder().build(document: document)
+
+        XCTAssertTrue(html.contains("<code>docs/plans/&lt;filename&gt;.md</code>"))
+        XCTAssertFalse(html.contains("<code>docs/plans/<filename>.md</code>"))
+    }
+
+    func testEmbeddedHTMLAndXMLTagsRenderAsLiteralText() {
+        let body = "Save plans to <plan>docs/plans/YYYY-MM-DD-<filename>.md</plan>."
+        let document = ParsedMarkdownDocument(body: body, flattenedFrontmatter: [:])
+
+        let html = RenderedHTMLBuilder().build(document: document)
+
+        XCTAssertTrue(html.contains("&lt;plan&gt;"))
+        XCTAssertTrue(html.contains("&lt;filename&gt;"))
+        XCTAssertTrue(html.contains("&lt;/plan&gt;"))
+        XCTAssertFalse(html.contains("<plan>"))
     }
 
     func testTransformsLatexFencedBlocksIntoMathContainers() {
