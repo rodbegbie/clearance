@@ -1,5 +1,10 @@
 # Clearance Changelog
 
+## 1.2.0 - March 9, 2026
+
+- Added native file dragging from the address bar document icon, so the open local file can be dropped directly into Finder, Slack, and other apps that accept file URLs.
+- Fixed recent-files sidebar drags to use real file URLs for external drops while preserving Clearance's internal pop-out drag behavior.
+
 ## 1.1.0 - March 7, 2026
 
 - Added bundled Graphviz DOT rendering for fenced `dot` and `graphviz` blocks, and now scale diagrams and markdown images to fit the reading column instead of sliding under the outline.
