@@ -7,6 +7,7 @@ struct RecentFilesSidebar: View {
     let entries: [RecentFileEntry]
     @Binding var selectedPath: String?
     let onOpenFile: () -> Void
+    let onDropURL: (URL) -> Bool
     let onSelect: (RecentFileEntry) -> Void
     let onOpenInNewWindow: (RecentFileEntry) -> Void
     let onRemoveFromSidebar: (RecentFileEntry) -> Void
@@ -14,12 +15,16 @@ struct RecentFilesSidebar: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
+                Text("History")
+                    .font(.headline)
+
+                Spacer()
+
                 Button(action: onOpenFile) {
-                    Label("Open Markdown…", systemImage: "folder.badge.plus")
+                    Label("Open…", systemImage: "folder.badge.plus")
                 }
                 .buttonStyle(.borderless)
                 .controlSize(.small)
-                Spacer()
             }
             .padding(.horizontal, 10)
             .padding(.vertical, 8)
@@ -54,6 +59,13 @@ struct RecentFilesSidebar: View {
                 accessibilityReduceMotion ? nil : .snappy(duration: 0.26),
                 value: entries.map { "\($0.path)|\($0.lastOpenedAt.timeIntervalSinceReferenceDate)" }
             )
+        }
+        .dropDestination(for: URL.self) { items, _ in
+            guard let url = items.first else {
+                return false
+            }
+
+            return onDropURL(url)
         }
     }
 

@@ -175,7 +175,7 @@ private struct ClearanceCommands: Commands {
         }
 
         CommandGroup(replacing: .newItem) {
-            Button("Open Markdown…") {
+            Button("Open…") {
                 actions?.openFile()
             }
             .keyboardShortcut("o")
