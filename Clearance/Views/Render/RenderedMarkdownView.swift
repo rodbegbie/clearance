@@ -61,7 +61,7 @@ struct RenderedMarkdownView: NSViewRepresentable {
         let coordinator = context.coordinator
         coordinator.sourceDocumentURL = sourceDocumentURL
         coordinator.onOpenLinkedDocument = onOpenLinkedDocument
-        let baseURL = sourceDocumentURL.deletingLastPathComponent()
+        let baseURL = Self.navigationBaseURL(for: sourceDocumentURL)
         if coordinator.renderContentKey != renderContentKey {
             coordinator.renderContentKey = renderContentKey
             coordinator.appliedTextScale = textScale
@@ -73,6 +73,10 @@ struct RenderedMarkdownView: NSViewRepresentable {
 
         coordinator.applyTextScaleIfNeeded(textScale, in: webView)
         coordinator.applyScrollRequestIfNeeded(headingScrollRequest, in: webView)
+    }
+
+    static func navigationBaseURL(for sourceDocumentURL: URL) -> URL {
+        sourceDocumentURL
     }
 
     final class Coordinator: NSObject, WKNavigationDelegate {

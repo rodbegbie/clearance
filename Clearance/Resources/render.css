@@ -46,8 +46,11 @@ td {
   font-size: 12.5px;
 }
 
-th {
+.frontmatter th {
   width: 30%;
+}
+
+th {
   color: var(--muted);
   font-weight: 500;
 }

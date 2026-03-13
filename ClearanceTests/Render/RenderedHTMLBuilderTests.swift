@@ -18,6 +18,32 @@ final class RenderedHTMLBuilderTests: XCTestCase {
         XCTAssertTrue(html.contains("<th>seo.keywords[0]</th>"))
     }
 
+    func testFrontmatterHeaderWidthIsScopedAwayFromMarkdownTables() {
+        let document = ParsedMarkdownDocument(
+            body: """
+            | Name | Value |
+            | --- | --- |
+            | Alpha | 1 |
+            """,
+            flattenedFrontmatter: ["title": "Doc"]
+        )
+
+        let html = RenderedHTMLBuilder().build(document: document)
+
+        XCTAssertTrue(html.contains(".frontmatter th"))
+        XCTAssertTrue(html.contains("width: 30%;"))
+        XCTAssertFalse(html.contains("\nth {\n  width: 30%;"))
+    }
+
+    func testRenderedMarkdownUsesDocumentURLAsNavigationBaseURL() {
+        let sourceURL = URL(fileURLWithPath: "/tmp/docs/root.md")
+
+        XCTAssertEqual(
+            RenderedMarkdownView.navigationBaseURL(for: sourceURL),
+            sourceURL
+        )
+    }
+
     func testIncludesRenderedMarkdownBodyHTML() {
         let document = ParsedMarkdownDocument(body: "# Heading", flattenedFrontmatter: [:])
 
