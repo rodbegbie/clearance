@@ -4,50 +4,79 @@
       <rect x="0" y="0" width="1024" height="1024" rx="220" ry="220"/>
     </clipPath>
 
-    <linearGradient id="bgGrad" x1="0" y1="0" x2="0.3" y2="1">
-      <stop offset="0%" stop-color="#D6EAFF"/>
-      <stop offset="55%" stop-color="#A8CCEE"/>
-      <stop offset="100%" stop-color="#4A7AAF"/>
+    <!-- Background: brighter top, deeper bottom for more atmospheric contrast -->
+    <linearGradient id="bgGrad" x1="0.1" y1="0" x2="0.3" y2="1">
+      <stop offset="0%"   stop-color="#EAF6FF"/>
+      <stop offset="30%"  stop-color="#9DC8EE"/>
+      <stop offset="70%"  stop-color="#4A85C0"/>
+      <stop offset="100%" stop-color="#1E4A7A"/>
     </linearGradient>
 
+    <!-- Atmospheric bloom: luminous haze at top-left -->
+    <radialGradient id="bgBloom" cx="0.12" cy="0.08" r="0.65" gradientUnits="objectBoundingBox">
+      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.28"/>
+      <stop offset="45%"  stop-color="#D0EAFF" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#D0EAFF" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Paper: cooler ice-blue glass tint instead of opaque white -->
     <linearGradient id="paperGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#FFFFFF"/>
-      <stop offset="100%" stop-color="#EDF3FA"/>
+      <stop offset="0%"   stop-color="#F2F9FF"/>
+      <stop offset="100%" stop-color="#D4E9FA"/>
+    </linearGradient>
+
+    <!-- Diagonal specular sheen across the document card -->
+    <linearGradient id="paperSheen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="30%"  stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="42%"  stop-color="#FFFFFF" stop-opacity="0.28"/>
+      <stop offset="50%"  stop-color="#FFFFFF" stop-opacity="0.14"/>
+      <stop offset="62%"  stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
     </linearGradient>
 
     <filter id="paperShadow" x="-12%" y="-8%" width="136%" height="136%">
-      <feDropShadow dx="0" dy="10" stdDeviation="36" flood-color="#1A3A6C" flood-opacity="0.22"/>
+      <feDropShadow dx="0" dy="10" stdDeviation="36" flood-color="#1A3A6C" flood-opacity="0.30"/>
     </filter>
 
     <linearGradient id="hashGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#74C2FF"/>
-      <stop offset="40%" stop-color="#3381F0"/>
+      <stop offset="0%"   stop-color="#92D4FF"/>
+      <stop offset="40%"  stop-color="#3381F0"/>
       <stop offset="100%" stop-color="#1245B8"/>
     </linearGradient>
 
     <linearGradient id="hash2Grad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#8DCFFF"/>
+      <stop offset="0%"   stop-color="#A0D8FF"/>
       <stop offset="100%" stop-color="#2E72DD"/>
     </linearGradient>
 
     <linearGradient id="bodyGrad" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#7A9EC0" stop-opacity="0.55"/>
-      <stop offset="85%" stop-color="#7A9EC0" stop-opacity="0.15"/>
+      <stop offset="0%"   stop-color="#7A9EC0" stop-opacity="0.55"/>
+      <stop offset="85%"  stop-color="#7A9EC0" stop-opacity="0.15"/>
       <stop offset="100%" stop-color="#7A9EC0" stop-opacity="0"/>
     </linearGradient>
 
     <linearGradient id="headGrad" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#1F3E6E" stop-opacity="0.80"/>
+      <stop offset="0%"   stop-color="#1F3E6E" stop-opacity="0.80"/>
       <stop offset="100%" stop-color="#1F3E6E" stop-opacity="0.60"/>
     </linearGradient>
 
+    <!-- Top-edge shine: broader fade for a luminous glass rim -->
     <linearGradient id="edgeShine" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.90"/>
+      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.90"/>
+      <stop offset="60%"  stop-color="#FFFFFF" stop-opacity="0.10"/>
       <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
     </linearGradient>
 
-    <filter id="hashGlow" x="-25%" y="-25%" width="150%" height="150%">
-      <feGaussianBlur stdDeviation="7" result="blur"/>
+    <!-- Left rim-light: vertical specular edge on the glass pane -->
+    <linearGradient id="leftRim" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.50"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Hash glow: stronger bloom around heading marks -->
+    <filter id="hashGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="11" result="blur"/>
       <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
 
@@ -85,17 +114,30 @@
 
     <rect width="1024" height="1024" fill="url(#bgGrad)"/>
 
+    <!-- Atmospheric bloom overlay -->
+    <rect width="1024" height="1024" fill="url(#bgBloom)"/>
+
     <!-- Mountains -->
     <path d="M0 700 L160 480 L290 590 L420 380 L560 560 L680 420 L800 530 L940 370 L1024 440 L1024 1024 L0 1024 Z"
           fill="#1A3A5C" opacity="0.18"/>
     <path d="M0 780 L200 600 L370 690 L520 550 L650 640 L800 510 L950 620 L1024 570 L1024 1024 L0 1024 Z"
           fill="#0D2540" opacity="0.22"/>
 
-    <!-- Paper -->
+    <!-- Paper: cooler glass fill, slightly translucent -->
     <rect x="112" y="88" width="800" height="848" rx="32" ry="32"
-          fill="url(#paperGrad)" filter="url(#paperShadow)"/>
-    <rect x="112" y="88" width="800" height="80" rx="32" ry="32"
-          fill="url(#edgeShine)" opacity="0.6"/>
+          fill="url(#paperGrad)" filter="url(#paperShadow)" opacity="0.92"/>
+
+    <!-- Diagonal specular sheen across the card surface -->
+    <rect x="112" y="88" width="800" height="848" rx="32" ry="32"
+          fill="url(#paperSheen)"/>
+
+    <!-- Top-edge rim highlight -->
+    <rect x="112" y="88" width="800" height="100" rx="32" ry="32"
+          fill="url(#edgeShine)" opacity="0.85"/>
+
+    <!-- Left rim-light -->
+    <rect x="112" y="88" width="60" height="848" rx="32" ry="32"
+          fill="url(#leftRim)"/>
 
     <!-- ═══════════════════════════════
          H1 # glyph — top=163, bot=310, cy=236
