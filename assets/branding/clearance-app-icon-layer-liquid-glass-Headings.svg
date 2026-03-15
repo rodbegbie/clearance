@@ -16,11 +16,6 @@
       <stop offset="100%" stop-color="#1F3E6E" stop-opacity="0.60"/>
     </linearGradient>
 
-    <filter id="hashGlow" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="11" result="blur"/>
-      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-
     <mask id="h1mask">
       <text x="152" y="310"
             font-family="SF Pro Display, -apple-system, Helvetica Neue, Arial, sans-serif"
@@ -35,18 +30,14 @@
   </defs>
 
   <!-- H1 # glyph -->
-  <g filter="url(#hashGlow)">
-    <rect x="112" y="130" width="320" height="210" mask="url(#h1mask)" fill="url(#hashGrad)"/>
-  </g>
+  <rect x="112" y="130" width="320" height="210" mask="url(#h1mask)" fill="url(#hashGrad)"/>
   <!-- H1 title bars -->
   <rect x="302" y="178" width="540" height="30" rx="8" fill="url(#headGrad)"/>
-  <rect x="302" y="222" width="340" height="20" rx="6" fill="url(#headGrad)" opacity="0.45"/>
+  <rect x="302" y="222" width="340" height="20" rx="6" fill="url(#headGrad)"/>
 
   <!-- H2 ## glyphs -->
-  <g filter="url(#hashGlow)" opacity="0.93">
-    <rect x="112" y="516" width="430" height="150" mask="url(#h2mask)" fill="url(#hash2Grad)"/>
-  </g>
+  <rect x="112" y="516" width="430" height="150" mask="url(#h2mask)" fill="url(#hash2Grad)"/>
   <!-- H2 title bars -->
-  <rect x="368" y="562" width="464" height="26" rx="7" fill="url(#headGrad)" opacity="0.75"/>
-  <rect x="368" y="600" width="288" height="18" rx="5" fill="url(#headGrad)" opacity="0.38"/>
+  <rect x="368" y="562" width="464" height="26" rx="7" fill="url(#headGrad)"/>
+  <rect x="368" y="600" width="288" height="18" rx="5" fill="url(#headGrad)"/>
 </svg>
