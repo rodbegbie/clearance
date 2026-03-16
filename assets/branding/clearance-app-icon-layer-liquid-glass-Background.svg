@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bgGrad" x1="0.1" y1="0" x2="0.3" y2="1">
+      <stop offset="0%"   stop-color="#EAF6FF"/>
+      <stop offset="30%"  stop-color="#9DC8EE"/>
+      <stop offset="70%"  stop-color="#4A85C0"/>
+      <stop offset="100%" stop-color="#1E4A7A"/>
+    </linearGradient>
+
+    <radialGradient id="bgBloom" cx="0.12" cy="0.08" r="0.65" gradientUnits="objectBoundingBox">
+      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.28"/>
+      <stop offset="45%"  stop-color="#D0EAFF" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#D0EAFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1024" height="1024" fill="url(#bgGrad)"/>
+  <rect width="1024" height="1024" fill="url(#bgBloom)"/>
+</svg>
