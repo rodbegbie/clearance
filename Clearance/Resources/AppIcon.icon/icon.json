@@ -34,7 +34,7 @@
         },
         {
           "glass" : true,
-          "image-name" : "clearance-app-icon-layer-liquid-glass-Headings 2.svg",
+          "image-name" : "clearance-app-icon-layer-liquid-glass-Headings.svg",
           "name" : "Headings"
         }
       ],
@@ -51,23 +51,25 @@
     },
     {
       "blend-mode" : "normal",
-      "blur-material" : null,
+      "blur-material" : 1,
       "hidden" : false,
       "layers" : [
         {
-          "image-name" : "clearance-app-icon-layer-liquid-glass-Document 3.svg",
-          "name" : "Document"
+          "image-name" : "clearance-app-icon-layer-liquid-glass-Document.svg",
+          "name" : "Document",
+          "opacity" : 0.8
         }
       ],
       "lighting" : "combined",
+      "opacity" : 1,
       "shadow" : {
-        "kind" : "layer-color",
+        "kind" : "neutral",
         "opacity" : 0.5
       },
       "specular" : true,
       "translucency" : {
         "enabled" : true,
-        "value" : 0.2
+        "value" : 0.5
       }
     },
     {
@@ -91,8 +93,9 @@
           "fill" : "none",
           "glass" : true,
           "hidden" : false,
-          "image-name" : "clearance-app-icon-layer-liquid-glass-Mountains 2.svg",
-          "name" : "Mountains"
+          "image-name" : "clearance-app-icon-layer-liquid-glass-Mountains.svg",
+          "name" : "Mountains",
+          "opacity" : 1
         }
       ],
       "lighting" : "combined",
@@ -121,7 +124,7 @@
         {
           "glass" : false,
           "hidden" : false,
-          "image-name" : "clearance-app-icon-layer-liquid-glass-Background 2.svg",
+          "image-name" : "clearance-app-icon-layer-liquid-glass-Background.svg",
           "name" : "Background",
           "opacity-specializations" : [
             {
@@ -132,6 +135,12 @@
         }
       ],
       "lighting" : "combined",
+      "opacity-specializations" : [
+        {
+          "appearance" : "dark",
+          "value" : 0.4
+        }
+      ],
       "shadow" : {
         "kind" : "none",
         "opacity" : 0.5
