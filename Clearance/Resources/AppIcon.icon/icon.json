@@ -1,4 +1,5 @@
 {
+  "color-space-for-untagged-svg-colors" : "display-p3",
   "fill" : {
     "linear-gradient" : [
       "display-p3:0.94028,0.97090,0.99706,1.00000",
@@ -19,58 +20,84 @@
     {
       "blend-mode-specializations" : [
         {
-          "appearance" : "tinted",
-          "value" : "plus-darker"
+          "value" : "screen"
+        },
+        {
+          "appearance" : "dark",
+          "value" : "plus-lighter"
         }
       ],
-      "blur-material" : null,
+      "blur-material" : 0.5,
       "hidden" : false,
       "layers" : [
         {
-          "blend-mode" : "normal",
-          "glass" : true,
-          "image-name" : "clearance-app-icon-layer-liquid-glass-Body.svg",
-          "name" : "Body"
-        },
-        {
-          "glass" : true,
-          "image-name" : "clearance-app-icon-layer-liquid-glass-Headings.svg",
-          "name" : "Headings"
+          "image-name" : "clearance-app-icon-layer-liquid-glass-H1.svg",
+          "name" : "clearance-app-icon-layer-liquid-glass-H1"
         }
       ],
       "lighting" : "individual",
+      "name" : "H1",
       "shadow" : {
-        "kind" : "layer-color",
-        "opacity" : 0.5
+        "kind" : "neutral",
+        "opacity" : 1
       },
-      "specular" : false,
-      "translucency" : {
-        "enabled" : true,
-        "value" : 0.5
-      }
+      "specular" : true,
+      "translucency-specializations" : [
+        {
+          "value" : {
+            "enabled" : true,
+            "value" : 0.5
+          }
+        },
+        {
+          "appearance" : "tinted",
+          "value" : {
+            "enabled" : false,
+            "value" : 0.5
+          }
+        }
+      ]
     },
     {
-      "blend-mode" : "normal",
-      "blur-material" : 1,
+      "blend-mode-specializations" : [
+        {
+          "value" : "screen"
+        },
+        {
+          "appearance" : "dark",
+          "value" : "plus-lighter"
+        }
+      ],
+      "blur-material" : 0.5,
       "hidden" : false,
       "layers" : [
         {
-          "image-name" : "clearance-app-icon-layer-liquid-glass-Document.svg",
-          "name" : "Document",
-          "opacity" : 0.8
+          "image-name" : "clearance-app-icon-layer-liquid-glass-H2.svg",
+          "name" : "clearance-app-icon-layer-liquid-glass-H2"
         }
       ],
-      "lighting" : "combined",
-      "opacity" : 1,
+      "lighting" : "individual",
+      "name" : "H2",
       "shadow" : {
         "kind" : "neutral",
-        "opacity" : 0.5
+        "opacity" : 1
       },
-      "specular" : true,
-      "translucency" : {
-        "enabled" : true,
-        "value" : 0.5
-      }
+      "specular" : false,
+      "translucency-specializations" : [
+        {
+          "value" : {
+            "enabled" : true,
+            "value" : 0.5
+          }
+        },
+        {
+          "appearance" : "tinted",
+          "value" : {
+            "enabled" : false,
+            "value" : 0.5
+          }
+        }
+      ]
     },
     {
       "blend-mode-specializations" : [
@@ -79,26 +106,19 @@
         },
         {
           "appearance" : "dark",
-          "value" : "normal"
-        },
-        {
-          "appearance" : "tinted",
-          "value" : "normal"
+          "value" : "multiply"
         }
       ],
-      "blur-material" : null,
+      "blur-material" : 0.5,
       "layers" : [
         {
-          "blend-mode" : "normal",
-          "fill" : "none",
-          "glass" : true,
-          "hidden" : false,
           "image-name" : "clearance-app-icon-layer-liquid-glass-Mountains.svg",
-          "name" : "Mountains",
-          "opacity" : 1
+          "name" : "clearance-app-icon-layer-liquid-glass-Mountains"
         }
       ],
       "lighting" : "combined",
+      "name" : "Mountains",
+      "opacity" : 0.75,
       "shadow" : {
         "kind" : "layer-color",
         "opacity" : 0.5
@@ -110,34 +130,23 @@
       }
     },
     {
-      "blend-mode-specializations" : [
-        {
-          "value" : "normal"
-        },
-        {
-          "appearance" : "dark",
-          "value" : "hard-light"
-        }
-      ],
+      "blend-mode" : "normal",
       "hidden" : false,
       "layers" : [
         {
-          "glass" : false,
-          "hidden" : false,
           "image-name" : "clearance-app-icon-layer-liquid-glass-Background.svg",
-          "name" : "Background",
-          "opacity-specializations" : [
-            {
-              "appearance" : "tinted",
-              "value" : 0
-            }
-          ]
+          "name" : "clearance-app-icon-layer-liquid-glass-Background"
         }
       ],
       "lighting" : "combined",
+      "name" : "Background",
       "opacity-specializations" : [
         {
           "appearance" : "dark",
+          "value" : 0.5
+        },
+        {
+          "appearance" : "tinted",
           "value" : 0.4
         }
       ],
@@ -153,9 +162,8 @@
     }
   ],
   "supported-platforms" : {
-    "circles" : [
-      "watchOS"
-    ],
-    "squares" : "shared"
+    "squares" : [
+      "macOS"
+    ]
   }
 }
