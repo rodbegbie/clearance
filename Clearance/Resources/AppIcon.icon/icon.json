@@ -31,6 +31,7 @@
       "hidden" : false,
       "layers" : [
         {
+          "fill" : "automatic",
           "image-name" : "clearance-app-icon-layer-liquid-glass-H1.svg",
           "name" : "clearance-app-icon-layer-liquid-glass-H1"
         }
@@ -72,6 +73,7 @@
       "hidden" : false,
       "layers" : [
         {
+          "fill" : "automatic",
           "image-name" : "clearance-app-icon-layer-liquid-glass-H2.svg",
           "name" : "clearance-app-icon-layer-liquid-glass-H2"
         }
@@ -100,15 +102,7 @@
       ]
     },
     {
-      "blend-mode-specializations" : [
-        {
-          "value" : "darken"
-        },
-        {
-          "appearance" : "dark",
-          "value" : "multiply"
-        }
-      ],
+      "blend-mode" : "normal",
       "blur-material" : 0.5,
       "layers" : [
         {
@@ -134,6 +128,7 @@
       "hidden" : false,
       "layers" : [
         {
+          "hidden" : false,
           "image-name" : "clearance-app-icon-layer-liquid-glass-Background.svg",
           "name" : "clearance-app-icon-layer-liquid-glass-Background"
         }
@@ -143,11 +138,11 @@
       "opacity-specializations" : [
         {
           "appearance" : "dark",
-          "value" : 0.5
+          "value" : 0
         },
         {
           "appearance" : "tinted",
-          "value" : 0.4
+          "value" : 0
         }
       ],
       "shadow" : {
