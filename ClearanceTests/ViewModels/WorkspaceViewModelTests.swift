@@ -16,6 +16,25 @@ final class WorkspaceViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isActiveDocumentRemote)
     }
 
+    func testPromptAndCreateNewDocumentCreatesMarkdownFileAndOpensInEditMode() throws {
+        let newDocumentURL = try makeTempDirectory()
+            .appendingPathComponent("notes.md")
+        let defaults = UserDefaults(suiteName: UUID().uuidString)!
+        let store = RecentFilesStore(userDefaults: defaults, storageKey: "recent")
+        let viewModel = WorkspaceViewModel(
+            recentFilesStore: store,
+            openPanelService: MockOpenPanelService(newDocumentURL: newDocumentURL)
+        )
+
+        let session = viewModel.promptAndCreateNewDocument()
+
+        XCTAssertEqual(session?.url.path, newDocumentURL.path)
+        XCTAssertEqual(viewModel.activeSession?.url.path, newDocumentURL.path)
+        XCTAssertEqual(viewModel.mode, .edit)
+        XCTAssertEqual(store.entries.first?.path, newDocumentURL.path)
+        XCTAssertEqual(try String(contentsOf: newDocumentURL, encoding: .utf8), "# notes\n\n")
+    }
+
     func testOpenURLInsertsRecentAtTop() throws {
         let firstURL = try makeTempMarkdown(contents: "1")
         let secondURL = try makeTempMarkdown(contents: "2")
@@ -338,12 +357,17 @@ final class WorkspaceViewModelTests: XCTestCase {
     }
 
     private func makeTempMarkdown(contents: String) throws -> URL {
-        let directory = FileManager.default.temporaryDirectory
-            .appendingPathComponent(UUID().uuidString, isDirectory: true)
-        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let directory = try makeTempDirectory()
         let fileURL = directory.appendingPathComponent("sample.md")
         try contents.write(to: fileURL, atomically: true, encoding: .utf8)
         return fileURL
+    }
+
+    private func makeTempDirectory() throws -> URL {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        return directory
     }
 
     private func makeTempFolderWithFiles(_ fileNames: [String]) throws -> URL {
@@ -368,12 +392,18 @@ final class WorkspaceViewModelTests: XCTestCase {
 @MainActor
 private final class MockOpenPanelService: OpenPanelServicing {
     let openItemURL: URL?
+    let newDocumentURL: URL?
 
-    init(openItemURL: URL?) {
+    init(openItemURL: URL? = nil, newDocumentURL: URL? = nil) {
         self.openItemURL = openItemURL
+        self.newDocumentURL = newDocumentURL
     }
 
     func chooseMarkdownFile() -> URL? {
         openItemURL
+    }
+
+    func chooseNewMarkdownFileLocation() -> URL? {
+        newDocumentURL
     }
 }

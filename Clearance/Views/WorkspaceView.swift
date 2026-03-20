@@ -301,6 +301,11 @@ struct WorkspaceView: View {
         viewModel.promptAndOpenFile()
     }
 
+    @discardableResult
+    private func createNewDocument() -> DocumentSession? {
+        viewModel.promptAndCreateNewDocument()
+    }
+
     private func handleSidebarDrop(_ url: URL) -> Bool {
         if let values = try? url.resourceValues(forKeys: [.isDirectoryKey]), values.isDirectory == true {
             _ = viewModel.openPickedItem(url)
@@ -440,6 +445,7 @@ struct WorkspaceView: View {
 
     private var workspaceCommandActions: WorkspaceCommandActions {
         WorkspaceCommandActions(
+            newFile: { createNewDocument() },
             openFile: { openDocumentFromPicker() },
             toggleOutline: { if canShowOutlineControls { isOutlineVisible.toggle() } },
             showViewMode: { if viewModel.hasActiveDocument { viewModel.mode = .view } },

@@ -80,6 +80,7 @@ struct ClearanceApp: App {
 }
 
 struct WorkspaceCommandActions {
+    let newFile: () -> Void
     let openFile: () -> Void
     let toggleOutline: () -> Void
     let showViewMode: () -> Void
@@ -110,6 +111,12 @@ struct RenderedTextZoomCommand {
     let title: String
     let keyEquivalent: KeyEquivalent
     let modifiers: EventModifiers
+}
+
+enum NewDocumentCommand {
+    static let title = "New…"
+    static let keyEquivalent: KeyEquivalent = "n"
+    static let modifiers: EventModifiers = .command
 }
 
 enum RenderedTextZoomCommands {
@@ -175,6 +182,15 @@ private struct ClearanceCommands: Commands {
         }
 
         CommandGroup(replacing: .newItem) {
+            Button(NewDocumentCommand.title) {
+                actions?.newFile()
+            }
+            .keyboardShortcut(
+                NewDocumentCommand.keyEquivalent,
+                modifiers: NewDocumentCommand.modifiers
+            )
+            .disabled(actions == nil)
+
             Button("Open…") {
                 actions?.openFile()
             }

@@ -5,6 +5,12 @@ import XCTest
 
 @MainActor
 final class WorkspaceToolbarTests: XCTestCase {
+    func testNewDocumentCommandUsesStandardMacTitleAndShortcut() {
+        XCTAssertEqual(NewDocumentCommand.title, "New…")
+        XCTAssertEqual(NewDocumentCommand.keyEquivalent, "n")
+        XCTAssertEqual(NewDocumentCommand.modifiers, EventModifiers.command)
+    }
+
     func testRenderedTextZoomCommandsUseStandardMacTitlesAndShortcuts() {
         XCTAssertEqual(RenderedTextZoomCommands.actualSize.title, "Actual Size")
         XCTAssertEqual(RenderedTextZoomCommands.actualSize.keyEquivalent, "0")

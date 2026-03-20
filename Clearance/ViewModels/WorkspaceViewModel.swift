@@ -83,6 +83,15 @@ final class WorkspaceViewModel: NSObject, ObservableObject {
     }
 
     @discardableResult
+    func promptAndCreateNewDocument() -> DocumentSession? {
+        guard let url = openPanelService.chooseNewMarkdownFileLocation() else {
+            return nil
+        }
+
+        return createAndOpenNewDocument(at: url)
+    }
+
+    @discardableResult
     func openPickedItem(_ url: URL) -> DocumentSession? {
         if isDirectory(url) {
             return queueOrImportFolder(at: url)
@@ -132,6 +141,22 @@ final class WorkspaceViewModel: NSObject, ObservableObject {
             recordNavigation: recordNavigation
         )
         return true
+    }
+
+    @discardableResult
+    private func createAndOpenNewDocument(at url: URL) -> DocumentSession? {
+        do {
+            try NewMarkdownDocument.create(at: url)
+        } catch {
+            errorMessage = "Failed to create \(url.path): \(error.localizedDescription)"
+            return nil
+        }
+
+        let session = open(url: url, resetModeToDefault: false)
+        if session != nil {
+            mode = .edit
+        }
+        return session
     }
 
     private func openLocal(url: URL, recordNavigation: Bool, resetModeToDefault: Bool) -> DocumentSession? {
