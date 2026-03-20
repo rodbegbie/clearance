@@ -262,6 +262,38 @@ final class RenderedHTMLBuilderTests: XCTestCase {
         XCTAssertTrue(html.contains("data-clearance-diagram-expandable=\"true\""))
     }
 
+    func testRenderedDiagramsIncludeReusableOverlayScaffolding() {
+        let body = """
+        ```mermaid
+        graph TD
+          A[Start] --> B[Done]
+        ```
+        """
+        let document = ParsedMarkdownDocument(body: body, flattenedFrontmatter: [:])
+
+        let html = RenderedHTMLBuilder().build(document: document)
+
+        XCTAssertTrue(html.contains("data-clearance-diagram-overlay=\"true\""))
+        XCTAssertTrue(html.contains("data-clearance-diagram-overlay-close=\"true\""))
+        XCTAssertTrue(html.contains("data-clearance-diagram-overlay-body=\"true\""))
+    }
+
+    func testRenderedDiagramsIncludeOverlayBehaviorHooks() {
+        let body = """
+        ```mermaid
+        graph TD
+          A[Start] --> B[Done]
+        ```
+        """
+        let document = ParsedMarkdownDocument(body: body, flattenedFrontmatter: [:])
+
+        let html = RenderedHTMLBuilder().build(document: document)
+
+        XCTAssertTrue(html.contains("const openDiagramOverlay ="))
+        XCTAssertTrue(html.contains("const closeDiagramOverlay ="))
+        XCTAssertTrue(html.contains("event.key === 'Escape'"))
+    }
+
     func testGraphvizCSPAllowsBundledWASMRenderer() {
         let body = """
         ```dot
