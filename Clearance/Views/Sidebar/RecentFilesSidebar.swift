@@ -48,7 +48,8 @@ struct RecentFilesSidebar: View {
             }
             .onChange(of: selectedPath) { _, newPath in
                 guard let newPath,
-                      let entry = entries.first(where: { $0.path == newPath }) else {
+                      let entry = entries.first(where: { $0.path == newPath }),
+                      entry.isAvailable else {
                     return
                 }
 
@@ -107,6 +108,7 @@ struct RecentFilesSidebar: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .contentShape(Rectangle())
+        .opacity(entry.isAvailable ? 1 : 0.45)
         .tag(entry.path)
         .contextMenu {
             contextMenuActions(for: entry)
@@ -121,6 +123,7 @@ struct RecentFilesSidebar: View {
                 selectedPath = entry.path
                 onOpenInNewWindow(entry)
             }
+            .disabled(!entry.isAvailable)
 
             Divider()
 
@@ -128,6 +131,7 @@ struct RecentFilesSidebar: View {
                 selectedPath = entry.path
                 NSWorkspace.shared.activateFileViewerSelecting([entry.fileURL])
             }
+            .disabled(!entry.isAvailable)
 
             Button("Copy Path to File") {
                 selectedPath = entry.path

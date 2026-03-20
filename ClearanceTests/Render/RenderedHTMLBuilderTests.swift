@@ -44,6 +44,19 @@ final class RenderedHTMLBuilderTests: XCTestCase {
         )
     }
 
+    func testPrintHTMLUsesLightPalette() {
+        let document = ParsedMarkdownDocument(body: "# Heading", flattenedFrontmatter: [:])
+
+        let html = RenderedHTMLBuilder().buildPrintHTML(
+            document: document,
+            theme: .classicBlue
+        )
+
+        XCTAssertTrue(html.contains("color-scheme: light;"))
+        XCTAssertTrue(html.contains("--text: #1F2733;"))
+        XCTAssertFalse(html.contains("--text: #D5DEEB;"))
+    }
+
     func testIncludesRenderedMarkdownBodyHTML() {
         let document = ParsedMarkdownDocument(body: "# Heading", flattenedFrontmatter: [:])
 

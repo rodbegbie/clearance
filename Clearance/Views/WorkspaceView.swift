@@ -516,10 +516,10 @@ struct WorkspaceView: View {
         }
 
         let parsed = FrontmatterParser().parse(markdown: markdown)
-        let html = RenderedHTMLBuilder().build(
+        let html = RenderedHTMLBuilder().buildPrintHTML(
             document: parsed,
             theme: appSettings.theme,
-            appearance: appSettings.appearance
+            textScale: appSettings.renderedTextScale
         )
         let state = interactionState
         state.printJob = RenderedDocumentPrintJob(

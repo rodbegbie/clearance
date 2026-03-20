@@ -51,6 +51,14 @@ struct RecentFileEntry: Codable, Equatable, Identifiable {
         return URL(fileURLWithPath: path)
     }
 
+    var isAvailable: Bool {
+        guard fileURL.isFileURL else {
+            return true
+        }
+
+        return FileManager.default.fileExists(atPath: fileURL.path)
+    }
+
     init(path: String, lastOpenedAt: Date = .now) {
         self.path = path
         self.lastOpenedAt = lastOpenedAt

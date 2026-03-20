@@ -68,6 +68,19 @@ struct RenderedHTMLBuilder {
         """
     }
 
+    func buildPrintHTML(
+        document: ParsedMarkdownDocument,
+        theme: AppTheme = .apple,
+        textScale: Double = 1.0
+    ) -> String {
+        build(
+            document: document,
+            theme: theme,
+            appearance: .light,
+            textScale: textScale
+        )
+    }
+
     private func frontmatterTableHTML(from frontmatter: [String: String]) -> String {
         guard !frontmatter.isEmpty else {
             return ""
