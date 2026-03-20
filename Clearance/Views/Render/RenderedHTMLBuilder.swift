@@ -152,11 +152,11 @@ struct RenderedHTMLBuilder {
             let replacement: String
             if language == "mermaid" {
                 replacement = """
-                <div class=\"mermaid\" data-clearance-diagram=\"mermaid\">\(escapeHTML(decodedCode.trimmingCharacters(in: .whitespacesAndNewlines)))</div>
+                <div class=\"mermaid\" data-clearance-diagram=\"mermaid\"\(expandableDiagramAttributes())>\(escapeHTML(decodedCode.trimmingCharacters(in: .whitespacesAndNewlines)))</div>
                 """
             } else if ["dot", "graphviz"].contains(language) {
                 replacement = """
-                <div class=\"graphviz\" data-clearance-diagram=\"graphviz\">\(escapeHTML(decodedCode.trimmingCharacters(in: .whitespacesAndNewlines)))</div>
+                <div class=\"graphviz\" data-clearance-diagram=\"graphviz\"\(expandableDiagramAttributes())>\(escapeHTML(decodedCode.trimmingCharacters(in: .whitespacesAndNewlines)))</div>
                 """
             } else if ["math", "latex", "tex", "katex"].contains(language) {
                 replacement = """
@@ -171,6 +171,12 @@ struct RenderedHTMLBuilder {
         }
 
         return result
+    }
+
+    private func expandableDiagramAttributes() -> String {
+        """
+         data-clearance-diagram-expandable=\"true\" tabindex=\"0\" role=\"button\" aria-label=\"Expand diagram\"
+        """
     }
 
     private func transformTaskListItems(in html: String) -> String {
