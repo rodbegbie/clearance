@@ -1,145 +1,33 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
   <defs>
-    <clipPath id="appClip">
-      <rect x="0" y="0" width="1024" height="1024" rx="220" ry="220"/>
-    </clipPath>
-
-    <linearGradient id="bgGrad" x1="0" y1="0" x2="0.3" y2="1">
-      <stop offset="0%" stop-color="#D6EAFF"/>
-      <stop offset="55%" stop-color="#A8CCEE"/>
-      <stop offset="100%" stop-color="#4A7AAF"/>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#C4DCEF"/>
+      <stop offset="60%" stop-color="#7AAAC8"/>
+      <stop offset="100%" stop-color="#3A6A9A"/>
     </linearGradient>
-
-    <linearGradient id="paperGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#FFFFFF"/>
-      <stop offset="100%" stop-color="#EDF3FA"/>
-    </linearGradient>
-
-    <filter id="paperShadow" x="-12%" y="-8%" width="136%" height="136%">
-      <feDropShadow dx="0" dy="10" stdDeviation="36" flood-color="#1A3A6C" flood-opacity="0.22"/>
-    </filter>
-
     <linearGradient id="hashGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#74C2FF"/>
-      <stop offset="40%" stop-color="#3381F0"/>
-      <stop offset="100%" stop-color="#1245B8"/>
+      <stop offset="0%" stop-color="#EEF8FF"/>
+      <stop offset="100%" stop-color="#C4E6FF"/>
     </linearGradient>
-
-    <linearGradient id="hash2Grad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#8DCFFF"/>
-      <stop offset="100%" stop-color="#2E72DD"/>
+    <linearGradient id="titleGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#D8EEFF" stop-opacity="1.00"/>
+      <stop offset="70%" stop-color="#D8EEFF" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="#D8EEFF" stop-opacity="0.20"/>
     </linearGradient>
-
-    <linearGradient id="bodyGrad" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#7A9EC0" stop-opacity="0.55"/>
-      <stop offset="85%" stop-color="#7A9EC0" stop-opacity="0.15"/>
-      <stop offset="100%" stop-color="#7A9EC0" stop-opacity="0"/>
-    </linearGradient>
-
-    <linearGradient id="headGrad" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#1F3E6E" stop-opacity="0.80"/>
-      <stop offset="100%" stop-color="#1F3E6E" stop-opacity="0.60"/>
-    </linearGradient>
-
-    <linearGradient id="edgeShine" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.90"/>
-      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
-    </linearGradient>
-
-    <filter id="hashGlow" x="-25%" y="-25%" width="150%" height="150%">
-      <feGaussianBlur stdDeviation="7" result="blur"/>
-      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-
-    <!--
-      H1 #: font-size=210, baseline y=310
-      Cap height ~70% of em = 147px
-      So glyph top ≈ 310 - 147 = 163, glyph bottom ≈ 310
-      Glyph center cy ≈ (163 + 310) / 2 = 236
-      Glyph right edge: # at size 210 is roughly 130px wide
-      So right edge ≈ 152 + 130 = 282 → use 290 as start of text lines
-    -->
-    <mask id="h1mask">
-      <text x="152" y="310"
-            font-family="SF Pro Display, -apple-system, Helvetica Neue, Arial, sans-serif"
-            font-size="210" font-weight="700" fill="white">#</text>
-    </mask>
-
-    <!--
-      H2 ##: font-size=130, baseline y=638
-      Cap height ≈ 91px
-      Glyph top ≈ 638 - 91 = 547, bottom ≈ 638
-      cy ≈ (547 + 638) / 2 = 592
-      ## width at size 130: roughly 2 × 82 + spacing ≈ 195px
-      Right edge ≈ 152 + 195 = 347 → use 362 as text start
-    -->
-    <mask id="h2mask">
-      <text x="152" y="638"
-            font-family="SF Pro Display, -apple-system, Helvetica Neue, Arial, sans-serif"
-            font-size="130" font-weight="700" fill="white" letter-spacing="4">##</text>
-    </mask>
-
   </defs>
 
-  <g clip-path="url(#appClip)">
+  <rect x="0" y="0" width="1024" height="1024" fill="url(#bgGrad)"/>
 
-    <rect width="1024" height="1024" fill="url(#bgGrad)"/>
+  <path d="M0 875 L160 700 L290 775 L420 615 L560 735 L680 605 L800 695 L940 565 L1024 625 L1024 1024 L0 1024 Z"
+        fill="#0D2540" opacity="0.70"/>
 
-    <!-- Mountains -->
-    <path d="M0 700 L160 480 L290 590 L420 380 L560 560 L680 420 L800 530 L940 370 L1024 440 L1024 1024 L0 1024 Z"
-          fill="#1A3A5C" opacity="0.18"/>
-    <path d="M0 780 L200 600 L370 690 L520 550 L650 640 L800 510 L950 620 L1024 570 L1024 1024 L0 1024 Z"
-          fill="#0D2540" opacity="0.22"/>
+  <text x="128" y="508"
+        font-family="SF Pro Display, -apple-system, Helvetica Neue, Arial, sans-serif"
+        font-size="400" font-weight="800" fill="url(#hashGrad)">#</text>
+  <rect x="430" y="236" width="466" height="252" rx="18" fill="url(#titleGrad)"/>
 
-    <!-- Paper -->
-    <rect x="112" y="88" width="800" height="848" rx="32" ry="32"
-          fill="url(#paperGrad)" filter="url(#paperShadow)"/>
-    <rect x="112" y="88" width="800" height="80" rx="32" ry="32"
-          fill="url(#edgeShine)" opacity="0.6"/>
-
-    <!-- ═══════════════════════════════
-         H1 # glyph — top=163, bot=310, cy=236
-         ═══════════════════════════════ -->
-    <g filter="url(#hashGlow)">
-      <rect x="112" y="130" width="320" height="210" mask="url(#h1mask)" fill="url(#hashGrad)"/>
-    </g>
-
-    <!-- H1 text lines — snug to right of #, centered at cy=236 -->
-    <!-- gap=20px after glyph right edge ~282, so x=302 -->
-    <!-- line1 h=30: y = 236-36 = 200 -->
-    <!-- line2 h=20: y = 236+10 = 246 -->
-    <rect x="302" y="178" width="540" height="30" rx="8" fill="url(#headGrad)"/>
-    <rect x="302" y="222" width="340" height="20" rx="6" fill="url(#headGrad)" opacity="0.45"/>
-
-    <!-- BODY PARA 1 — starts just below glyph bottom (310) + gap -->
-    <rect x="152" y="350" width="620" height="16" rx="5" fill="url(#bodyGrad)"/>
-    <rect x="152" y="378" width="580" height="16" rx="5" fill="url(#bodyGrad)"/>
-    <rect x="152" y="406" width="544" height="16" rx="5" fill="url(#bodyGrad)"/>
-    <rect x="152" y="434" width="440" height="16" rx="5" fill="url(#bodyGrad)"/>
-    <rect x="152" y="462" width="330" height="16" rx="5" fill="url(#bodyGrad)"/>
-
-    <!-- ═══════════════════════════════
-         H2 ## glyphs — top=547, bot=638, cy=592
-         ═══════════════════════════════ -->
-    <g filter="url(#hashGlow)" opacity="0.93">
-      <rect x="112" y="516" width="430" height="150" mask="url(#h2mask)" fill="url(#hash2Grad)"/>
-    </g>
-
-    <!-- H2 text lines — snug to right of ##, centered at cy=592 -->
-    <!-- ## right edge ~347, gap=18, so x=365 -->
-    <!-- line1 h=24: y = 592-24 = 568 -->
-    <!-- line2 h=17: y = 592+8  = 600 -->
-    <rect x="368" y="562" width="464" height="26" rx="7" fill="url(#headGrad)" opacity="0.75"/>
-    <rect x="368" y="600" width="288" height="18" rx="5" fill="url(#headGrad)" opacity="0.38"/>
-
-    <!-- BODY PARA 2 — starts below ## bottom (638) + gap -->
-    <rect x="152" y="678" width="612" height="16" rx="5" fill="url(#bodyGrad)"/>
-    <rect x="152" y="706" width="574" height="16" rx="5" fill="url(#bodyGrad)"/>
-    <rect x="152" y="734" width="536" height="16" rx="5" fill="url(#bodyGrad)"/>
-    <rect x="152" y="762" width="490" height="16" rx="5" fill="url(#bodyGrad)"/>
-    <rect x="152" y="790" width="400" height="16" rx="5" fill="url(#bodyGrad)" opacity="0.75"/>
-    <rect x="152" y="818" width="300" height="16" rx="5" fill="url(#bodyGrad)" opacity="0.55"/>
-    <rect x="152" y="846" width="196" height="16" rx="5" fill="url(#bodyGrad)" opacity="0.35"/>
-
-  </g>
+  <text x="128" y="808"
+        font-family="SF Pro Display, -apple-system, Helvetica Neue, Arial, sans-serif"
+        font-size="290" font-weight="700" fill="url(#hashGrad)">##</text>
+  <rect x="560" y="629" width="336" height="147" rx="12" fill="url(#titleGrad)"/>
 </svg>
