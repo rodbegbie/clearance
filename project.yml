@@ -36,6 +36,24 @@ targets:
       - package: Yams
       - package: Markdown
       - package: Sparkle
+      - target: ClearanceCLI
+        link: false
+        embed: true
+        copy:
+          destination: wrapper
+          subpath: Contents/Helpers
+  ClearanceCLI:
+    type: tool
+    platform: macOS
+    sources:
+      - path: ClearanceCLI
+      - path: Clearance/Services/ClearanceCommandLineTool.swift
+      - path: Clearance/Services/FileIO.swift
+      - path: Clearance/Services/NewMarkdownDocument.swift
+    settings:
+      base:
+        PRODUCT_NAME: clearance
+        SWIFT_VERSION: 6.0
   ClearanceTests:
     type: bundle.unit-test
     platform: macOS
@@ -54,6 +72,10 @@ schemes:
       targets:
         Clearance: all
         ClearanceTests: [test]
+    run:
+      config: Debug
+      executable: Clearance
     test:
+      config: Debug
       targets:
         - name: ClearanceTests

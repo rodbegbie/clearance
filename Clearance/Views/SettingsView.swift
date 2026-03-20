@@ -2,6 +2,8 @@ import SwiftUI
 
 struct SettingsView: View {
     @ObservedObject var settings: AppSettings
+    @State private var commandLineToolStatus: String?
+    @State private var commandLineToolStatusIsError = false
 
     var body: some View {
         Form {
@@ -35,8 +37,43 @@ struct SettingsView: View {
                 }
             }
             .pickerStyle(.segmented)
+
+            Divider()
+
+            VStack(alignment: .leading, spacing: 8) {
+                Button("Install Command-Line Tool") {
+                    installCommandLineTool()
+                }
+
+                Text("Adds `clearance` to `/usr/local/bin` so Terminal can open files and folders in Clearance.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                if let commandLineToolStatus {
+                    Text(commandLineToolStatus)
+                        .font(.caption)
+                        .foregroundStyle(commandLineToolStatusIsError ? .red : .secondary)
+                }
+            }
         }
         .padding(16)
         .frame(width: 440)
+    }
+
+    private func installCommandLineTool() {
+        guard let helperExecutableURL = ClearanceCommandLineTool.helperExecutableURL() else {
+            commandLineToolStatus = "Bundled helper executable not found."
+            commandLineToolStatusIsError = true
+            return
+        }
+
+        do {
+            try ClearanceCommandLineToolInstaller.install(helperExecutableURL: helperExecutableURL)
+            commandLineToolStatus = "Installed `clearance` at \(ClearanceCommandLineToolInstaller.installURL.path)."
+            commandLineToolStatusIsError = false
+        } catch {
+            commandLineToolStatus = error.localizedDescription
+            commandLineToolStatusIsError = true
+        }
     }
 }

@@ -132,7 +132,34 @@ jobs:
             )
           fi
 
-          sign_path "$APP_PATH/Contents/MacOS/$APP_NAME"
+          if [ -d "$APP_PATH/Contents/MacOS" ]; then
+            while IFS= read -r executable; do
+              sign_path "$executable"
+            done < <(
+              find "$APP_PATH/Contents/MacOS" \
+                -type f \
+                -perm -111 \
+                -print \
+                | awk '{ print length($0) " " $0 }' \
+                | sort -rn \
+                | cut -d' ' -f2-
+            )
+          fi
+
+          if [ -d "$APP_PATH/Contents/Helpers" ]; then
+            while IFS= read -r executable; do
+              sign_path "$executable"
+            done < <(
+              find "$APP_PATH/Contents/Helpers" \
+                -type f \
+                -perm -111 \
+                -print \
+                | awk '{ print length($0) " " $0 }' \
+                | sort -rn \
+                | cut -d' ' -f2-
+            )
+          fi
+
           sign_path "$APP_PATH"
           codesign --verify --deep --strict --verbose=2 "$APP_PATH"
           spctl --assess --type execute --verbose "$APP_PATH" || true
