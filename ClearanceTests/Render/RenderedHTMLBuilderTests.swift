@@ -199,6 +199,20 @@ final class RenderedHTMLBuilderTests: XCTestCase {
         XCTAssertFalse(html.contains("language-mermaid"))
     }
 
+    func testRenderedMermaidDiagramsExposeExpansionHooks() {
+        let body = """
+        ```mermaid
+        graph TD
+          A[Start] --> B[Done]
+        ```
+        """
+        let document = ParsedMarkdownDocument(body: body, flattenedFrontmatter: [:])
+
+        let html = RenderedHTMLBuilder().build(document: document)
+
+        XCTAssertTrue(html.contains("data-clearance-diagram-expandable=\"true\""))
+    }
+
     func testTransformsDotFencedBlocksIntoGraphvizContainers() {
         let body = """
         ```dot
@@ -231,6 +245,21 @@ final class RenderedHTMLBuilderTests: XCTestCase {
         XCTAssertTrue(html.contains("data-clearance-diagram=\"graphviz\""))
         XCTAssertTrue(html.contains("<div class=\"graphviz\""))
         XCTAssertFalse(html.contains("language-graphviz"))
+    }
+
+    func testRenderedGraphvizDiagramsExposeExpansionHooks() {
+        let body = """
+        ```graphviz
+        digraph {
+          a -> b
+        }
+        ```
+        """
+        let document = ParsedMarkdownDocument(body: body, flattenedFrontmatter: [:])
+
+        let html = RenderedHTMLBuilder().build(document: document)
+
+        XCTAssertTrue(html.contains("data-clearance-diagram-expandable=\"true\""))
     }
 
     func testGraphvizCSPAllowsBundledWASMRenderer() {
