@@ -110,6 +110,20 @@ with the helper breaks the app bundle's signature, which Gatekeeper catches.
 **No shell interpretation.** The helper uses `FileManager` directly to create the
 symlink — no `NSTask`, no shell — eliminating shell expansion as an attack surface.
 
+**Code signing identity verification.** The helper verifies that the source binary
+is signed with the same Team ID as itself before creating the symlink:
+
+1. Call `SecCodeCopySelf` to obtain the helper's own code object, then
+   `SecCodeCopySigningInformation` to extract its `kSecCodeInfoTeamIdentifier`.
+2. Call `SecStaticCodeCreateWithPath` on the source binary, then
+   `SecCodeCopySigningInformation` to extract its Team ID.
+3. Reject the source if the Team IDs do not match.
+
+Using the Team ID (rather than a specific certificate CN) means this check survives
+certificate renewals. It ensures the binary promoted to `/usr/local/bin` was signed
+by the same developer as the helper itself. The Security framework is added as a
+dependency of `ClearanceInstallHelper`.
+
 **Symlink atomicity.** Removing the existing symlink and creating the new one are
 two separate operations; a crash between them would leave the destination absent.
 The window is small and the consequence is recoverable (re-run the installer), so
@@ -130,6 +144,7 @@ this trade-off is acceptable.
 **`ClearanceInstallHelper` (unit tests):**
 - Rejects an invalid destination path
 - Rejects a source path that does not begin with the helper's derived bundle root
+- Rejects a source binary whose Team ID does not match the helper's own Team ID
 - Creates the symlink when arguments are valid (temp directory)
 - Replaces an existing symlink at the destination
 - Writes nothing on success; writes a single-line error message to stdout on failure
@@ -147,7 +162,7 @@ verify the symlink is created.
 ## Build Configuration
 
 Add to `project.yml`:
-- A new `ClearanceInstallHelper` tool target with `ENABLE_HARDENED_RUNTIME: YES`
-  and `SWIFT_VERSION: 6.0`
+- A new `ClearanceInstallHelper` tool target with `ENABLE_HARDENED_RUNTIME: YES`,
+  `SWIFT_VERSION: 6.0`, and a link dependency on the `Security` framework
 - An embed + copy dependency from `Clearance` to `ClearanceInstallHelper`, placing
   it at `Contents/Helpers/ClearanceInstallHelper`
