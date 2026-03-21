@@ -31,6 +31,7 @@ enum HelperInstaller {
         teamIDExtractor: TeamIDExtractor = HelperInstaller.teamID(forURL:)
     ) throws {
         try validateDestination(destination)
+        try validateSource(source, helperExecutablePath: helperExecutablePath)
     }
 
     static func validateDestination(_ url: URL) throws {
@@ -40,7 +41,17 @@ enum HelperInstaller {
     }
 
     static func validateSource(_ source: URL, helperExecutablePath: String) throws {
-        // TODO
+        let helperURL = URL(fileURLWithPath: helperExecutablePath)
+        let bundleRoot = helperURL
+            .deletingLastPathComponent() // Helpers
+            .deletingLastPathComponent() // Contents
+            .deletingLastPathComponent() // bundle root
+
+        let bundlePrefix = bundleRoot.path + "/"
+        guard source.path.hasPrefix(bundlePrefix),
+              FileManager.default.isReadableFile(atPath: source.path) else {
+            throw HelperInstallerError.sourceOutsideBundle
+        }
     }
 
     static func validateTeamID(

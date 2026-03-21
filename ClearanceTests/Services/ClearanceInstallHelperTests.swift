@@ -22,6 +22,28 @@ final class ClearanceInstallHelperTests: XCTestCase {
         )
     }
 
+    // MARK: - Source validation
+
+    func testValidateSourceRejectsPathOutsideBundle() throws {
+        let (_, helperPath, _) = try makeBundleFixture()
+        // This source is in a completely different temp directory — not inside the bundle
+        let outsideSource = try makeFile(named: "clearance")
+
+        XCTAssertThrowsError(
+            try HelperInstaller.validateSource(outsideSource, helperExecutablePath: helperPath)
+        ) { error in
+            XCTAssertEqual(error as? HelperInstallerError, .sourceOutsideBundle)
+        }
+    }
+
+    func testValidateSourceAcceptsPathInsideBundle() throws {
+        let (source, helperPath, _) = try makeBundleFixture()
+
+        XCTAssertNoThrow(
+            try HelperInstaller.validateSource(source, helperExecutablePath: helperPath)
+        )
+    }
+
     // MARK: - Helpers (used by later tasks too)
 
     private func makeFile(named name: String, in dir: URL? = nil) throws -> URL {
