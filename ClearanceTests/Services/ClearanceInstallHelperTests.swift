@@ -86,6 +86,32 @@ final class ClearanceInstallHelperTests: XCTestCase {
         )
     }
 
+    // MARK: - Symlink creation
+
+    func testCreateSymlinkCreatesSymlink() throws {
+        let (source, _, destination) = try makeBundleFixture()
+
+        try HelperInstaller.createSymlink(source: source, destination: destination)
+
+        XCTAssertEqual(
+            try FileManager.default.destinationOfSymbolicLink(atPath: destination.path),
+            source.path
+        )
+    }
+
+    func testCreateSymlinkReplacesExistingSymlink() throws {
+        let (source, _, destination) = try makeBundleFixture()
+        let oldTarget = try makeFile(named: "old-clearance")
+        try FileManager.default.createSymbolicLink(at: destination, withDestinationURL: oldTarget)
+
+        try HelperInstaller.createSymlink(source: source, destination: destination)
+
+        XCTAssertEqual(
+            try FileManager.default.destinationOfSymbolicLink(atPath: destination.path),
+            source.path
+        )
+    }
+
     // MARK: - Helpers (used by later tasks too)
 
     private func makeFile(named name: String, in dir: URL? = nil) throws -> URL {

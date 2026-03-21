@@ -37,6 +37,7 @@ enum HelperInstaller {
             helperExecutablePath: helperExecutablePath,
             teamIDExtractor: teamIDExtractor
         )
+        try createSymlink(source: source, destination: destination)
     }
 
     static func validateDestination(_ url: URL) throws {
@@ -77,7 +78,15 @@ enum HelperInstaller {
     }
 
     static func createSymlink(source: URL, destination: URL) throws {
-        // TODO
+        let fm = FileManager.default
+        if (try? fm.destinationOfSymbolicLink(atPath: destination.path)) != nil {
+            try fm.removeItem(at: destination)
+        }
+        do {
+            try fm.createSymbolicLink(at: destination, withDestinationURL: source)
+        } catch {
+            throw HelperInstallerError.installFailed(error.localizedDescription)
+        }
     }
 
     static func teamID(forURL url: URL) -> String? {
