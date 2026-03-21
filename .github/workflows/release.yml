@@ -54,7 +54,6 @@ jobs:
         id: build
         env:
           SPARKLE_PUBLIC_ED_KEY: ${{ secrets.SPARKLE_PUBLIC_ED_KEY }}
-          DEVELOPER_ID_INSTALLER_SIGNING_IDENTITY: ${{ secrets.DEVELOPER_ID_INSTALLER_SIGNING_IDENTITY }}
         run: |
           set -euo pipefail
           VERSION="${GITHUB_REF_NAME#v}"
@@ -103,6 +102,22 @@ jobs:
 
           echo "app_path=$APP_PATH" >> "$GITHUB_OUTPUT"
           echo "cli_installer_pkg=$CLI_INSTALLER_PKG" >> "$GITHUB_OUTPUT"
+
+      - name: Sign Bundled CLI Installer Package
+        env:
+          DEVELOPER_ID_INSTALLER_SIGNING_IDENTITY: ${{ secrets.DEVELOPER_ID_INSTALLER_SIGNING_IDENTITY }}
+        run: |
+          set -euo pipefail
+
+          CLI_INSTALLER_PKG="${{ steps.build.outputs.cli_installer_pkg }}"
+          SIGNED_CLI_INSTALLER_PKG="$RUNNER_TEMP/ClearanceCLIInstaller-signed.pkg"
+
+          productsign \
+            --sign "$DEVELOPER_ID_INSTALLER_SIGNING_IDENTITY" \
+            "$CLI_INSTALLER_PKG" \
+            "$SIGNED_CLI_INSTALLER_PKG"
+          mv "$SIGNED_CLI_INSTALLER_PKG" "$CLI_INSTALLER_PKG"
+          pkgutil --check-signature "$CLI_INSTALLER_PKG"
 
       - name: Codesign App Bundle
         env:

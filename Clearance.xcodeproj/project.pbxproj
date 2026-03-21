@@ -740,7 +740,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -euo pipefail\n\"$PROJECT_DIR/Packaging/build-cli-installer-pkg.sh\" \\\n  \"$BUILT_PRODUCTS_DIR/clearance\" \\\n  \"$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/ClearanceCLIInstaller.pkg\" \\\n  \"$MARKETING_VERSION\" \\\n  \"${DEVELOPER_ID_INSTALLER_SIGNING_IDENTITY:-}\"\n";
+			shellScript = "set -euo pipefail\n\"$PROJECT_DIR/Packaging/build-cli-installer-pkg.sh\" \\\n  \"$BUILT_PRODUCTS_DIR/clearance\" \\\n  \"$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/ClearanceCLIInstaller.pkg\" \\\n  \"$MARKETING_VERSION\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
