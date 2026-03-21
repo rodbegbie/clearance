@@ -40,25 +40,6 @@ final class ClearanceCommandLineInstallerTests: XCTestCase {
         }
     }
 
-    func testInstallReportsNonWritableInstallDirectory() throws {
-        let helperURL = try makeExecutable(named: "clearance")
-        let installDirectoryURL = try makeNonWritableDirectory()
-        let installURL = installDirectoryURL.appending(path: "clearance")
-
-        var privilegedRunnerCalled = false
-        let runner = ClearanceCommandLineToolInstaller.PrivilegedRunner { _, _ in
-            privilegedRunnerCalled = true
-        }
-
-        try ClearanceCommandLineToolInstaller.install(
-            helperExecutableURL: helperURL,
-            at: installURL,
-            privilegedRunner: runner
-        )
-
-        XCTAssertTrue(privilegedRunnerCalled)
-    }
-
     func testPrivilegedInstallIsAttemptedWhenDirectoryNotWritable() throws {
         let helperURL = try makeExecutable(named: "clearance")
         let installDirectoryURL = try makeNonWritableDirectory()

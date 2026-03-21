@@ -8,7 +8,7 @@ private func _AuthorizationExecuteWithPrivileges(
     _ authorization: AuthorizationRef,
     _ pathToTool: UnsafePointer<CChar>,
     _ options: AuthorizationFlags,
-    _ arguments: UnsafePointer<UnsafeMutablePointer<CChar>>,
+    _ arguments: UnsafePointer<UnsafeMutablePointer<CChar>?>,
     _ communicationsPipe: UnsafeMutablePointer<UnsafeMutablePointer<FILE>?>?
 ) -> OSStatus
 
@@ -85,7 +85,7 @@ struct ClearanceCommandLineToolInstaller {
                 destination.path.withCString { destCStr in
                     var srcPtr = UnsafeMutablePointer(mutating: sourceCStr)
                     var dstPtr = UnsafeMutablePointer(mutating: destCStr)
-                    var args: [UnsafeMutablePointer<CChar>] = [srcPtr, dstPtr]
+                    var args: [UnsafeMutablePointer<CChar>?] = [srcPtr, dstPtr, nil]
                     execStatus = args.withUnsafeMutableBufferPointer { buf in
                         _AuthorizationExecuteWithPrivileges(
                             authRef, helperBinary.path, [], buf.baseAddress!, &pipe
