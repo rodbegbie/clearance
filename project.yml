@@ -93,6 +93,7 @@ schemes:
     build:
       targets:
         Clearance: all
+        ClearanceInstallHelper: all
         ClearanceTests: [test]
     run:
       config: Debug
