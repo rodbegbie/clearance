@@ -57,6 +57,7 @@ jobs:
         id: build
         env:
           SPARKLE_PUBLIC_ED_KEY: ${{ secrets.SPARKLE_PUBLIC_ED_KEY }}
+          DEVELOPER_ID_APPLICATION_SIGNING_IDENTITY: ${{ secrets.DEVELOPER_ID_APPLICATION_SIGNING_IDENTITY }}
         run: |
           set -euo pipefail
           VERSION="${GITHUB_REF_NAME#v}"

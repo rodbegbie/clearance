@@ -11,6 +11,8 @@ CLI_BINARY_PATH="$1"
 OUTPUT_PKG_PATH="$2"
 PKG_VERSION="$3"
 INSTALLER_SIGN_IDENTITY="${4:-}"
+CLI_SIGN_IDENTITY="${DEVELOPER_ID_APPLICATION_SIGNING_IDENTITY:-}"
+SIGNING_KEYCHAIN_PATH="${SIGNING_KEYCHAIN_PATH:-}"
 
 WORK_DIR="$(mktemp -d "${TMPDIR%/}/clearance-cli-pkg.XXXXXX")"
 PAYLOAD_ROOT="$WORK_DIR/payload"
@@ -24,6 +26,20 @@ trap cleanup EXIT
 
 mkdir -p "$INSTALL_PATH"
 install -m 755 "$CLI_BINARY_PATH" "$INSTALL_PATH/clearance"
+
+if [[ -n "$CLI_SIGN_IDENTITY" ]]; then
+  CODESIGN_ARGS=(
+    --force
+    --timestamp
+    --options runtime
+    --sign "$CLI_SIGN_IDENTITY"
+  )
+  if [[ -n "$SIGNING_KEYCHAIN_PATH" ]]; then
+    CODESIGN_ARGS+=(--keychain "$SIGNING_KEYCHAIN_PATH")
+  fi
+  /usr/bin/codesign "${CODESIGN_ARGS[@]}" "$INSTALL_PATH/clearance"
+fi
+
 mkdir -p "$(dirname "$OUTPUT_PKG_PATH")"
 rm -f "$OUTPUT_PKG_PATH"
 
