@@ -69,7 +69,7 @@ enum HelperInstaller {
         let helperTeamID = teamIDExtractor(helperURL)
         let sourceTeamID = teamIDExtractor(source)
 
-        // Both unsigned — allow through. If either is signed, they must match.
+        // Both unsigned — allow through. If at least one is signed, both must be signed by the same team.
         if helperTeamID != nil || sourceTeamID != nil {
             guard helperTeamID == sourceTeamID else {
                 throw HelperInstallerError.teamIDMismatch
@@ -81,6 +81,8 @@ enum HelperInstaller {
         let fm = FileManager.default
         if (try? fm.destinationOfSymbolicLink(atPath: destination.path)) != nil {
             try fm.removeItem(at: destination)
+        } else if fm.fileExists(atPath: destination.path) {
+            throw HelperInstallerError.installFailed("Destination already exists and is not a symlink.")
         }
         do {
             try fm.createSymbolicLink(at: destination, withDestinationURL: source)

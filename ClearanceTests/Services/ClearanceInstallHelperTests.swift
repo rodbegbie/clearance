@@ -99,6 +99,17 @@ final class ClearanceInstallHelperTests: XCTestCase {
         )
     }
 
+    func testCreateSymlinkRefusesToReplaceExistingRegularFile() throws {
+        let (source, _, destination) = try makeBundleFixture()
+        try Data().write(to: destination)
+
+        XCTAssertThrowsError(
+            try HelperInstaller.createSymlink(source: source, destination: destination)
+        ) { error in
+            XCTAssertEqual(error as? HelperInstallerError, .installFailed("Destination already exists and is not a symlink."))
+        }
+    }
+
     func testCreateSymlinkReplacesExistingSymlink() throws {
         let (source, _, destination) = try makeBundleFixture()
         let oldTarget = try makeFile(named: "old-clearance")
@@ -125,7 +136,7 @@ final class ClearanceInstallHelperTests: XCTestCase {
 
     /// Creates a fake bundle at /tmp/<uuid>/fake.app with a clearance binary inside.
     /// Returns (sourceURL, helperExecutablePath, writableDestinationURL).
-    func makeBundleFixture() throws -> (source: URL, helperPath: String, destination: URL) {
+    private func makeBundleFixture() throws -> (source: URL, helperPath: String, destination: URL) {
         let dir = FileManager.default.temporaryDirectory
             .appendingPathComponent(UUID().uuidString)
         let helpersDir = dir.appendingPathComponent("fake.app/Contents/Helpers")
