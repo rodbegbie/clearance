@@ -42,21 +42,79 @@ final class ClearanceCommandLineInstallerTests: XCTestCase {
 
     func testInstallReportsNonWritableInstallDirectory() throws {
         let helperURL = try makeExecutable(named: "clearance")
-        let installDirectoryURL = try makeDirectory().appending(path: "bin", directoryHint: .isDirectory)
+        let installDirectoryURL = try makeNonWritableDirectory()
         let installURL = installDirectoryURL.appending(path: "clearance")
 
-        try FileManager.default.createDirectory(at: installDirectoryURL, withIntermediateDirectories: true)
-        try FileManager.default.setAttributes([.posixPermissions: 0o555], ofItemAtPath: installDirectoryURL.path)
-        defer {
-            try? FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: installDirectoryURL.path)
+        var privilegedRunnerCalled = false
+        let runner = ClearanceCommandLineToolInstaller.PrivilegedRunner { _, _ in
+            privilegedRunnerCalled = true
+        }
+
+        try ClearanceCommandLineToolInstaller.install(
+            helperExecutableURL: helperURL,
+            at: installURL,
+            privilegedRunner: runner
+        )
+
+        XCTAssertTrue(privilegedRunnerCalled)
+    }
+
+    func testPrivilegedInstallIsAttemptedWhenDirectoryNotWritable() throws {
+        let helperURL = try makeExecutable(named: "clearance")
+        let installDirectoryURL = try makeNonWritableDirectory()
+        let installURL = installDirectoryURL.appending(path: "clearance")
+
+        var privilegedRunnerCalled = false
+        let runner = ClearanceCommandLineToolInstaller.PrivilegedRunner { _, _ in
+            privilegedRunnerCalled = true
+        }
+
+        try ClearanceCommandLineToolInstaller.install(
+            helperExecutableURL: helperURL,
+            at: installURL,
+            privilegedRunner: runner
+        )
+
+        XCTAssertTrue(privilegedRunnerCalled)
+    }
+
+    func testPrivilegedInstallCancellationIsSilent() throws {
+        let helperURL = try makeExecutable(named: "clearance")
+        let installDirectoryURL = try makeNonWritableDirectory()
+        let installURL = installDirectoryURL.appending(path: "clearance")
+
+        let cancellingRunner = ClearanceCommandLineToolInstaller.PrivilegedRunner { _, _ in
+            throw ClearanceCommandLineToolInstallerError.privilegedInstallCancelled
+        }
+
+        XCTAssertNoThrow(
+            try ClearanceCommandLineToolInstaller.install(
+                helperExecutableURL: helperURL,
+                at: installURL,
+                privilegedRunner: cancellingRunner
+            )
+        )
+    }
+
+    func testPrivilegedInstallSurfacesHelperError() throws {
+        let helperURL = try makeExecutable(named: "clearance")
+        let installDirectoryURL = try makeNonWritableDirectory()
+        let installURL = installDirectoryURL.appending(path: "clearance")
+
+        let failingRunner = ClearanceCommandLineToolInstaller.PrivilegedRunner { _, _ in
+            throw ClearanceCommandLineToolInstallerError.privilegedInstallFailed("helper said no")
         }
 
         XCTAssertThrowsError(
-            try ClearanceCommandLineToolInstaller.install(helperExecutableURL: helperURL, at: installURL)
+            try ClearanceCommandLineToolInstaller.install(
+                helperExecutableURL: helperURL,
+                at: installURL,
+                privilegedRunner: failingRunner
+            )
         ) { error in
             XCTAssertEqual(
                 error as? ClearanceCommandLineToolInstallerError,
-                .installDirectoryNotWritable(installDirectoryURL)
+                .privilegedInstallFailed("helper said no")
             )
         }
     }
@@ -71,6 +129,16 @@ final class ClearanceCommandLineInstallerTests: XCTestCase {
         let url = FileManager.default.temporaryDirectory
             .appendingPathComponent(UUID().uuidString, isDirectory: true)
         try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+        return url
+    }
+
+    private func makeNonWritableDirectory() throws -> URL {
+        let url = try makeDirectory().appending(path: "bin", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+        try FileManager.default.setAttributes([.posixPermissions: 0o555], ofItemAtPath: url.path)
+        addTeardownBlock {
+            try? FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: url.path)
+        }
         return url
     }
 }
