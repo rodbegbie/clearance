@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Fixed rendered document View mode so the diagram overlay stays hidden until it is opened, instead of leaking a lone `Close` button into the page. Thanks to `earchibald` for the bug report in `#23`.
+- Fixed the bundled `clearance` helper so symlinked installs still locate `Clearance.app` correctly. Thanks to Rod Begbie for the bug report in `#25`.
+- Improved the CLI installer feedback when `/usr/local/bin` is not writable, so Clearance now explains that the location may require admin privileges instead of failing with a generic permissions error. Thanks to Rod Begbie for the bug report in `#26`.
+
 ## 1.2.7 - March 20, 2026
 
 - Fixed rendered image loading for markdown documents by restoring correct resource resolution for sibling files while preserving in-document heading links. Thanks to Christian Metts for the bug report in `#22`.

@@ -45,7 +45,7 @@ struct SettingsView: View {
                     installCommandLineTool()
                 }
 
-                Text("Adds `clearance` to `/usr/local/bin` so Terminal can open files and folders in Clearance.")
+                Text("Adds `clearance` to `/usr/local/bin` so Terminal can open files and folders in Clearance. That location may require admin privileges on some Macs.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
 

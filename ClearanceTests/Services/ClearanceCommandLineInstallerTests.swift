@@ -40,6 +40,27 @@ final class ClearanceCommandLineInstallerTests: XCTestCase {
         }
     }
 
+    func testInstallReportsNonWritableInstallDirectory() throws {
+        let helperURL = try makeExecutable(named: "clearance")
+        let installDirectoryURL = try makeDirectory().appending(path: "bin", directoryHint: .isDirectory)
+        let installURL = installDirectoryURL.appending(path: "clearance")
+
+        try FileManager.default.createDirectory(at: installDirectoryURL, withIntermediateDirectories: true)
+        try FileManager.default.setAttributes([.posixPermissions: 0o555], ofItemAtPath: installDirectoryURL.path)
+        defer {
+            try? FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: installDirectoryURL.path)
+        }
+
+        XCTAssertThrowsError(
+            try ClearanceCommandLineToolInstaller.install(helperExecutableURL: helperURL, at: installURL)
+        ) { error in
+            XCTAssertEqual(
+                error as? ClearanceCommandLineToolInstallerError,
+                .installDirectoryNotWritable(installDirectoryURL)
+            )
+        }
+    }
+
     private func makeExecutable(named name: String) throws -> URL {
         let url = try makeDirectory().appending(path: name)
         try Data().write(to: url)

@@ -40,6 +40,20 @@ final class ClearanceCommandLineToolTests: XCTestCase {
         XCTAssertTrue(isDirectory.boolValue)
     }
 
+    func testAppBundleURLResolvesSymlinkedHelperExecutable() throws {
+        let bundleURL = try makeBundle(helperName: ClearanceCommandLineTool.name)
+        let helperURL = bundleURL.appending(path: "Contents/Helpers/clearance")
+        let symlinkURL = try makeDirectory().appending(path: "clearance")
+
+        try FileManager.default.createSymbolicLink(at: symlinkURL, withDestinationURL: helperURL)
+
+        let appBundleURL = try XCTUnwrap(
+            ClearanceCommandLineTool.appBundleURL(forHelperExecutableURL: symlinkURL)
+        )
+
+        XCTAssertEqual(appBundleURL.path, bundleURL.path)
+    }
+
     private func makeBundle(helperName: String) throws -> URL {
         let rootURL = try makeDirectory().appendingPathExtension("app")
         let contentsURL = rootURL.appending(path: "Contents", directoryHint: .isDirectory)

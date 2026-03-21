@@ -446,6 +446,26 @@ final class RenderedHTMLBuilderTests: XCTestCase {
         XCTAssertTrue(html.contains("background: color-mix("))
     }
 
+    @MainActor
+    func testDiagramOverlayIsHiddenOnInitialRender() async throws {
+        let webView = try await makeLoadedWebView(for: "# Heading")
+
+        let overlayIsHidden = try await evaluateJavaScriptBoolean(
+            """
+            (() => {
+              const overlay = document.querySelector('[data-clearance-diagram-overlay="true"]');
+              return !!overlay
+                && overlay.hidden
+                && getComputedStyle(overlay).display === 'none'
+                && !document.body.innerText.includes('Close');
+            })()
+            """,
+            in: webView
+        )
+
+        XCTAssertEqual(overlayIsHidden, true)
+    }
+
     func testGraphvizCSPAllowsBundledWASMRenderer() {
         let body = """
         ```dot

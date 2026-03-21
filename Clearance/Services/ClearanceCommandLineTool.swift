@@ -13,7 +13,8 @@ enum ClearanceCommandLineTool {
     }
 
     static func appBundleURL(forHelperExecutableURL url: URL) -> URL? {
-        let appURL = url
+        let resolvedHelperURL = url.resolvingSymlinksInPath()
+        let appURL = resolvedHelperURL
             .deletingLastPathComponent()
             .deletingLastPathComponent()
             .deletingLastPathComponent()
