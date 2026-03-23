@@ -1,5 +1,9 @@
 # Clearance Changelog
 
+## 1.3.1 - March 23, 2026
+
+- Added support for raw HTML `<img>` tags in rendered markdown for both local and remote documents, while continuing to strip unsupported attributes and allow only safe image fields. Thanks to `richb-hanover` for the bug report in `#32`.
+
 ## 1.3.0 - March 21, 2026
 
 - Migrated Clearance to the `com.primeradiant.Clearance` app identity, and now import existing settings and History from older `com.jesse.Clearance` installs on first launch so the transition stays clean.
