@@ -526,6 +526,28 @@ final class RenderedHTMLBuilderTests: XCTestCase {
         XCTAssertFalse(html.contains("<li class=\"task-list-item\">"))
     }
 
+    func testLocalRawHTMLImageTagRendersAsSanitizedImageElement() {
+        let body = #"<img src="./docs/images/diagram.png" alt="Diagram" width="90%">"#
+        let document = ParsedMarkdownDocument(body: body, flattenedFrontmatter: [:])
+
+        let html = RenderedHTMLBuilder().build(document: document)
+
+        XCTAssertTrue(html.contains(#"<img src="./docs/images/diagram.png" alt="Diagram" width="90%" />"#))
+        XCTAssertFalse(html.contains("&lt;img"))
+    }
+
+    func testLocalRawHTMLImageTagDropsUnsupportedAttributes() {
+        let body = #"<img src="./docs/images/diagram.png" alt="Diagram" width="90%" class="wide" onclick="alert('xss')">"#
+        let document = ParsedMarkdownDocument(body: body, flattenedFrontmatter: [:])
+
+        let html = RenderedHTMLBuilder().build(document: document)
+
+        XCTAssertTrue(html.contains(#"<img src="./docs/images/diagram.png" alt="Diagram" width="90%" />"#))
+        XCTAssertFalse(html.contains("class=\"wide\""))
+        XCTAssertFalse(html.contains("onclick="))
+        XCTAssertFalse(html.contains("alert('xss')"))
+    }
+
     func testRendersGFMStrikethrough() {
         let body = "This is ~~struck~~ text."
         let document = ParsedMarkdownDocument(body: body, flattenedFrontmatter: [:])
@@ -668,6 +690,21 @@ final class RenderedHTMLBuilderTests: XCTestCase {
         XCTAssertFalse(html.contains("alert('xss')"))
         XCTAssertFalse(html.contains("href=\"javascript:"))
         XCTAssertFalse(html.contains("onclick="))
+    }
+
+    func testRemoteRawHTMLImageTagRendersAsSanitizedImageElement() {
+        let body = #"<img src="https://example.com/diagram.png" alt="Diagram" width="90%" class="wide" onclick="alert('xss')">"#
+        let document = ParsedMarkdownDocument(body: body, flattenedFrontmatter: [:])
+
+        let html = RenderedHTMLBuilder().build(
+            document: document,
+            isRemoteContent: true
+        )
+
+        XCTAssertTrue(html.contains(#"<img src="https://example.com/diagram.png" alt="Diagram" width="90%" />"#))
+        XCTAssertFalse(html.contains("class=\"wide\""))
+        XCTAssertFalse(html.contains("onclick="))
+        XCTAssertFalse(html.contains("alert('xss')"))
     }
 
     @MainActor

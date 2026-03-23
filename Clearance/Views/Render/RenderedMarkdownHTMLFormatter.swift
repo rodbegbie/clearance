@@ -4,6 +4,12 @@ import Markdown
 // Render markdown to browser-safe HTML so literal angle-bracket content does not turn into tags.
 struct RenderedMarkdownHTMLFormatter: MarkupWalker {
     private(set) var result = ""
+    private let rawImageTagRegex = try! NSRegularExpression(
+        pattern: #"(?is)^\s*<img\b((?:[^"'<>]|"[^"]*"|'[^']*')*)\s*/?>\s*$"#
+    )
+    private let rawHTMLAttributeRegex = try! NSRegularExpression(
+        pattern: #"(?is)\b([a-z][a-z0-9:-]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))"#
+    )
 
     let options: HTMLFormatterOptions
     let rendersRawHTMLAsLiteral: Bool
@@ -65,11 +71,7 @@ struct RenderedMarkdownHTMLFormatter: MarkupWalker {
     }
 
     mutating func visitHTMLBlock(_ html: HTMLBlock) {
-        if rendersRawHTMLAsLiteral {
-            result += escapeText(html.rawHTML)
-        } else {
-            result += html.rawHTML
-        }
+        result += renderRawHTML(html.rawHTML)
     }
 
     mutating func visitListItem(_ listItem: ListItem) {
@@ -204,11 +206,7 @@ struct RenderedMarkdownHTMLFormatter: MarkupWalker {
     }
 
     mutating func visitInlineHTML(_ inlineHTML: InlineHTML) {
-        if rendersRawHTMLAsLiteral {
-            result += escapeText(inlineHTML.rawHTML)
-        } else {
-            result += inlineHTML.rawHTML
-        }
+        result += renderRawHTML(inlineHTML.rawHTML)
     }
 
     mutating func visitLineBreak(_ lineBreak: LineBreak) {
@@ -286,5 +284,90 @@ struct RenderedMarkdownHTMLFormatter: MarkupWalker {
         escapeText(text)
             .replacingOccurrences(of: "\"", with: "&quot;")
             .replacingOccurrences(of: "'", with: "&#39;")
+    }
+
+    private func renderRawHTML(_ rawHTML: String) -> String {
+        if let sanitizedImage = sanitizeRawImageHTML(rawHTML) {
+            return sanitizedImage
+        }
+
+        if rendersRawHTMLAsLiteral {
+            return escapeText(rawHTML)
+        }
+
+        return rawHTML
+    }
+
+    private func sanitizeRawImageHTML(_ rawHTML: String) -> String? {
+        let range = NSRange(location: 0, length: (rawHTML as NSString).length)
+        guard let match = rawImageTagRegex.firstMatch(in: rawHTML, range: range) else {
+            return nil
+        }
+
+        let nsRawHTML = rawHTML as NSString
+        let attributeString = nsRawHTML.substring(with: match.range(at: 1))
+        let attributes = sanitizedRawImageAttributes(from: attributeString)
+
+        var html = "<img"
+        for name in ["src", "alt", "title", "width", "height"] {
+            guard let value = attributes[name], !value.isEmpty else {
+                continue
+            }
+
+            html += " \(name)=\"\(escapeAttribute(value))\""
+        }
+        html += " />"
+        return html
+    }
+
+    private func sanitizedRawImageAttributes(from attributeString: String) -> [String: String] {
+        let allowedAttributes: Set<String> = ["src", "alt", "title", "width", "height"]
+        let nsAttributeString = attributeString as NSString
+        let range = NSRange(location: 0, length: nsAttributeString.length)
+        let matches = rawHTMLAttributeRegex.matches(in: attributeString, range: range)
+        var attributes: [String: String] = [:]
+
+        for match in matches {
+            let name = nsAttributeString.substring(with: match.range(at: 1)).lowercased()
+            guard allowedAttributes.contains(name) else {
+                continue
+            }
+
+            let valueRange = [2, 3, 4]
+                .map { match.range(at: $0) }
+                .first { $0.location != NSNotFound }
+            guard let valueRange else {
+                continue
+            }
+
+            let rawValue = nsAttributeString.substring(with: valueRange)
+            let decodedValue = decodeHTMLEntities(rawValue).trimmingCharacters(in: .whitespacesAndNewlines)
+
+            if name == "src" && !isSafeImageSource(decodedValue) {
+                continue
+            }
+
+            attributes[name] = decodedValue
+        }
+
+        return attributes
+    }
+
+    private func isSafeImageSource(_ source: String) -> Bool {
+        let normalized = source.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard !normalized.isEmpty else {
+            return false
+        }
+
+        return !normalized.hasPrefix("javascript:") && !normalized.hasPrefix("vbscript:")
+    }
+
+    private func decodeHTMLEntities(_ text: String) -> String {
+        text
+            .replacingOccurrences(of: "&quot;", with: "\"")
+            .replacingOccurrences(of: "&#39;", with: "'")
+            .replacingOccurrences(of: "&lt;", with: "<")
+            .replacingOccurrences(of: "&gt;", with: ">")
+            .replacingOccurrences(of: "&amp;", with: "&")
     }
 }
