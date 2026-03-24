@@ -77,7 +77,7 @@ git push origin v0.0.1
 Regenerate app icon assets from the source SVG:
 
 ```bash
-scripts/generate-app-iconset.sh
+cd apps/macos && scripts/generate-app-iconset.sh
 ```
 
 ## Notes
