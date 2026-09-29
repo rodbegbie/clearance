@@ -46,6 +46,21 @@ td {
   font-size: 12.5px;
 }
 
+th[align="center"],
+td[align="center"] {
+  text-align: center;
+}
+
+th[align="right"],
+td[align="right"] {
+  text-align: right;
+}
+
+th[align="justify"],
+td[align="justify"] {
+  text-align: justify;
+}
+
 .frontmatter th {
   width: 30%;
 }
