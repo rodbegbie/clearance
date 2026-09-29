@@ -163,6 +163,15 @@ th {
   font-style: italic;
 }
 
+.markdown details {
+  margin: 1em 0;
+}
+
+.markdown summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
 .markdown hr {
   border: none;
   border-top: 1px solid var(--rule);
