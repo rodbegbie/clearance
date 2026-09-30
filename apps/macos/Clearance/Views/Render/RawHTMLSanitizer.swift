@@ -14,7 +14,7 @@ struct RawHTMLSanitizer {
         var cursor = 0
 
         for match in Self.tokenRegex.matches(in: rawHTML, range: NSRange(location: 0, length: nsRawHTML.length)) {
-            output += Self.escapeText(
+            output += Self.escapeRawText(
                 nsRawHTML.substring(with: NSRange(location: cursor, length: match.range.location - cursor))
             )
             cursor = match.range.location + match.range.length
@@ -36,7 +36,7 @@ struct RawHTMLSanitizer {
             }
         }
 
-        output += Self.escapeText(nsRawHTML.substring(from: cursor))
+        output += Self.escapeRawText(nsRawHTML.substring(from: cursor))
         return output
     }
 
@@ -72,6 +72,16 @@ struct RawHTMLSanitizer {
     static func escapeText(_ text: String) -> String {
         text
             .replacingOccurrences(of: "&", with: "&amp;")
+            .replacingOccurrences(of: "<", with: "&lt;")
+            .replacingOccurrences(of: ">", with: "&gt;")
+    }
+
+    // Text that will be parsed as HTML: valid character references are left for the browser to decode
+    // (they can never produce markup), so only bare ampersands and angle brackets need escaping.
+    static func escapeRawText(_ text: String) -> String {
+        let range = NSRange(location: 0, length: (text as NSString).length)
+        return bareAmpersandRegex
+            .stringByReplacingMatches(in: text, range: range, withTemplate: "&amp;")
             .replacingOccurrences(of: "<", with: "&lt;")
             .replacingOccurrences(of: ">", with: "&gt;")
     }
@@ -171,18 +181,46 @@ struct RawHTMLSanitizer {
         String(String.UnicodeScalarView(text.unicodeScalars.filter { $0.value > 0x20 && $0.value != 0x7F }))
     }
 
+    // Decoded in a single pass so "&amp;#38;" becomes "&#38;", not "&". Attribute values are decoded here,
+    // validated, then re-escaped, so the browser sees exactly what was validated.
     private static func decodeHTMLEntities(_ text: String) -> String {
-        text
-            .replacingOccurrences(of: "&quot;", with: "\"")
-            .replacingOccurrences(of: "&#39;", with: "'")
-            .replacingOccurrences(of: "&lt;", with: "<")
-            .replacingOccurrences(of: "&gt;", with: ">")
-            .replacingOccurrences(of: "&amp;", with: "&")
+        let nsText = text as NSString
+        var output = ""
+        var cursor = 0
+
+        for match in characterReferenceRegex.matches(in: text, range: NSRange(location: 0, length: nsText.length)) {
+            output += nsText.substring(with: NSRange(location: cursor, length: match.range.location - cursor))
+            output += decodedCharacter(for: match, in: nsText)
+            cursor = match.range.location + match.range.length
+        }
+        return output + nsText.substring(from: cursor)
+    }
+
+    private static func decodedCharacter(for match: NSTextCheckingResult, in text: NSString) -> String {
+        if match.range(at: 3).location != NSNotFound {
+            return namedCharacterReferences[text.substring(with: match.range(at: 3))] ?? ""
+        }
+
+        let isHex = match.range(at: 2).location != NSNotFound
+        let digits = text.substring(with: match.range(at: isHex ? 2 : 1))
+        guard let value = UInt32(digits, radix: isHex ? 16 : 10), value != 0, let scalar = Unicode.Scalar(value) else {
+            return "\u{FFFD}"
+        }
+        return String(Character(scalar))
     }
 
     private static let tokenRegex = try! NSRegularExpression(
         pattern: #"(<!--[\s\S]*?(?:-->|\z))|<(/?)([A-Za-z][A-Za-z0-9-]*)((?:[^>"']|"[^"]*"|'[^']*')*)>"#
     )
+    private static let characterReferenceRegex = try! NSRegularExpression(
+        pattern: #"&(?:#([0-9]+)|#[xX]([0-9A-Fa-f]+)|(amp|lt|gt|quot|apos|nbsp));"#
+    )
+    private static let bareAmpersandRegex = try! NSRegularExpression(
+        pattern: #"&(?!(?:#[0-9]+|#[xX][0-9A-Fa-f]+|[A-Za-z][A-Za-z0-9]*);)"#
+    )
+    private static let namedCharacterReferences = [
+        "amp": "&", "lt": "<", "gt": ">", "quot": "\"", "apos": "'", "nbsp": "\u{A0}"
+    ]
     private static let attributeRegex = try! NSRegularExpression(
         pattern: #"(?<![\w:-])([A-Za-z][A-Za-z0-9:-]*)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?"#
     )

@@ -280,6 +280,72 @@ final class LocalRawHTMLTests: XCTestCase {
         XCTAssertTrue(html.contains("a &lt; b and c &gt; d"), html)
     }
 
+    func testCharacterReferencesInRawTextAreLeftForTheBrowserToDecode() {
+        let html = format("<div>A &amp; B &#169; &#x263A;</div>")
+
+        XCTAssertTrue(html.contains("<div>A &amp; B &#169; &#x263A;</div>"), html)
+        XCTAssertFalse(html.contains("&amp;amp;"), html)
+        XCTAssertFalse(html.contains("&amp;#"), html)
+    }
+
+    func testBareAmpersandsInRawTextAreStillEscaped() {
+        let html = format("<div>AT&T & co &copy</div>")
+
+        XCTAssertTrue(html.contains("<div>AT&amp;T &amp; co &amp;copy</div>"), html)
+    }
+
+    func testEncodedAngleBracketsInRawTextNeverBecomeMarkup() {
+        let html = format("<div>&lt;script&gt;alert(1)&lt;/script&gt;</div>")
+
+        XCTAssertTrue(html.contains("&lt;script&gt;"), html)
+        XCTAssertFalse(html.contains("<script"), html)
+    }
+
+    func testNumericReferencesInHrefDecodeBeforeEscaping() {
+        let decimal = format(#"<a href="next.md?x=1&#38;y=2">next</a>"#)
+        let hex = format(#"<a href="next.md?x=1&#x26;y=2">next</a>"#)
+        let named = format(#"<a href="next.md?x=1&amp;y=2">next</a>"#)
+
+        for html in [decimal, hex, named] {
+            XCTAssertTrue(html.contains(#"<a href="next.md?x=1&amp;y=2">next</a>"#), html)
+        }
+    }
+
+    func testReferencesAreDecodedOnlyOnce() {
+        let html = format(#"<a href="a.md?x=&amp;#38;">a</a>"#)
+
+        XCTAssertTrue(html.contains(#"<a href="a.md?x=&amp;#38;">a</a>"#), html)
+    }
+
+    func testEncodedSchemeCharactersCannotSmuggleUnsafeLinks() {
+        let bodies = [
+            #"<a href="&#106;avascript:alert(1)">x</a>"#,
+            #"<a href="&#x6A;avascript:alert(1)">x</a>"#,
+            #"<a href="java&#9;script:alert(1)">x</a>"#,
+            #"<a href="java&#x0A;script:alert(1)">x</a>"#,
+            #"<a href="javascript&#58;alert(1)">x</a>"#
+        ]
+
+        for body in bodies {
+            let html = format("go " + body)
+
+            XCTAssertTrue(html.contains("<a>x</a>"), "\(body) -> \(html)")
+            XCTAssertFalse(html.contains("href"), "\(body) -> \(html)")
+        }
+    }
+
+    func testInvalidNumericReferencesBecomeTheReplacementCharacter() {
+        let html = format(#"<span title="a&#0;b&#xD800;c&#99999999999;d">t</span>"#)
+
+        XCTAssertTrue(html.contains("<span title=\"a\u{FFFD}b\u{FFFD}c\u{FFFD}d\">t</span>"), html)
+    }
+
+    func testImageAttributesDecodeReferences() {
+        let html = format(#"<img src="a.png?x=1&#38;y=2" alt="A &amp; B">"#)
+
+        XCTAssertTrue(html.contains(#"<img src="a.png?x=1&amp;y=2" alt="A &amp; B" />"#), html)
+    }
+
     private func format(_ body: String) -> String {
         RenderedMarkdownHTMLFormatter.format(Document(parsing: body))
     }
